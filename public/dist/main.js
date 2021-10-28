@@ -361,42 +361,38 @@ var exports = __webpack_exports__;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 var and_gate_1 = __webpack_require__(1);
 var button_1 = __webpack_require__(5);
-var node_1 = __webpack_require__(3);
 var not_gate_1 = __webpack_require__(6);
 var or_gate_1 = __webpack_require__(7);
 var things = [];
 window.setup = function () {
+    var _a;
     createCanvas(windowWidth, windowHeight);
+    (_a = document.querySelector('canvas')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', function () { return mousePressed(); });
 };
 window.draw = function () {
     background(255);
     things.forEach(function (cur) { return cur.draw(); });
 };
-window.keyPressed = function () {
+function mousePressed() {
     var newThing;
-    switch (key) {
-        case 'a':
+    var tool = document.getElementById('tool-selection').value;
+    switch (tool) {
+        case 'andGate':
             newThing = new and_gate_1.AndGate(createVector(mouseX, mouseY));
             break;
-        case 'b':
+        case 'button':
             newThing = new button_1.Button(createVector(mouseX, mouseY));
             break;
-        case 'n':
+        case 'notGate':
             newThing = new not_gate_1.NotGate(createVector(mouseX, mouseY));
             break;
-        case 'o':
+        case 'orGate':
             newThing = new or_gate_1.OrGate(createVector(mouseX, mouseY));
-            break;
-        case 'k':
-            newThing = new node_1.InputNode(createVector(mouseX, mouseY));
-            break;
-        case 'r':
-            things.length = 0;
             break;
     }
     if (newThing)
         things.push(newThing);
-};
+}
 
 })();
 

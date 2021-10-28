@@ -11,6 +11,7 @@ const things: Drawable[] = [];
 
 (window as any).setup = () => {
 	createCanvas(windowWidth, windowHeight);
+	document.querySelector('canvas')?.addEventListener('click', () => mousePressed());
 }
 
 (window as any).draw = () => {
@@ -18,27 +19,22 @@ const things: Drawable[] = [];
 	things.forEach(cur => cur.draw());
 }
 
-(window as any).keyPressed = () => {
+function mousePressed(): void {
 	let newThing: Drawable | undefined;
+	const tool = (document.getElementById('tool-selection') as HTMLInputElement).value;
 
-	switch(key) {
-		case 'a':
+	switch(tool) {
+		case 'andGate':
 			newThing = new AndGate(createVector(mouseX, mouseY));
 			break;
-		case 'b':
+		case 'button':
 			newThing = new Button(createVector(mouseX, mouseY));
 			break;
-		case 'n':
+		case 'notGate':
 			newThing = new NotGate(createVector(mouseX, mouseY));
 			break;
-		case 'o':
+		case 'orGate':
 			newThing = new OrGate(createVector(mouseX, mouseY));
-			break;
-		case 'k':
-			newThing = new InputNode(createVector(mouseX, mouseY));
-			break;
-		case 'r':
-			things.length = 0;
 			break;
 	}
 

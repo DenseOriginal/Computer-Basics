@@ -9,4 +9,15 @@ body {
     height: 100vh;
     display: grid;
     place-items: center;
+    position: relative;
+    font-family: Helvetica, sans-serif;
+}
+
+.tool-selection {
+    position: absolute;
+    right: 32px;
+    top: 32px;
+    padding: 8px 16px;
+    background-color: rgba(0, 0, 0, 0.04);
+    border-radius: 3px;
 }
