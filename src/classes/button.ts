@@ -10,7 +10,7 @@ export class Button implements Drawable {
   constructor(
     public pos: Vector
   ) {
-    this.output = new OutputNode(pos.copy().add(createVector(buttonSize / 1.7, 0)));
+    this.output = new OutputNode(createVector(buttonSize / 1.7, 0), this.pos);
     document.addEventListener('click', () => this.mouseClicked())
   }
 

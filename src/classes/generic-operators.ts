@@ -15,10 +15,10 @@ export abstract class GenericOperator implements Drawable {
   ) {
     this.width = textWidth(label) + 40;
 
-    this.inputA = new InputNode(this.pos.copy().add(createVector(-this.width / 1.7, -height * 0.3)));
-    this.inputB = new InputNode(this.pos.copy().add(createVector(-this.width / 1.7, +height * 0.3)));
+    this.inputA = new InputNode(createVector(-this.width / 1.7, -height * 0.3), pos);
+    this.inputB = new InputNode(createVector(-this.width / 1.7, +height * 0.3), pos);
 
-    this.output = new OutputNode(pos.copy().add(createVector(this.width / 1.7, 0)));
+    this.output = new OutputNode(createVector(this.width / 1.7, 0), pos);
   }
 
   public draw(): void {

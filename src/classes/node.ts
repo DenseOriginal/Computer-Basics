@@ -27,9 +27,11 @@ export class InputNode implements Drawable {
   readonly id = Math.random().toString();
 
   get status(): Status { return this.wire?.status || Wire.LOW; }
+  get pos(): Vector { return this.parent.copy().add(this.relative); }
 
   constructor(
-    public pos: Vector
+    private relative: Vector,
+    private parent: Vector,
   ) {
     document.addEventListener('click', () => this.mouseClicked())
   }
@@ -61,9 +63,11 @@ export class InputNode implements Drawable {
 export class OutputNode implements Drawable {
   private wires: Wire[] = [];
   readonly id = Math.random().toString();
+  get pos(): Vector { return this.parent.copy().add(this.relative); }
 
   constructor(
-    public pos: Vector
+    private relative: Vector,
+    private parent: Vector,
   ) {
     document.addEventListener('click', () => this.mouseClicked())
   }

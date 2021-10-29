@@ -16,7 +16,7 @@ export class Clock implements Drawable {
   constructor(
     public pos: Vector
   ) {
-    this.output = new OutputNode(pos.copy().add(createVector(size / 1.7, 0)));
+    this.output = new OutputNode(createVector(size / 1.7, 0), pos);
   }
 
   public draw(): void {

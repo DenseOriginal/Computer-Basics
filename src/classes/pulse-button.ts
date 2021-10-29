@@ -12,7 +12,7 @@ export class PulseButton implements Drawable {
   constructor(
     public pos: Vector
   ) {
-    this.output = new OutputNode(pos.copy().add(createVector(buttonSize / 1.7, 0)));
+    this.output = new OutputNode(createVector(buttonSize / 1.7, 0), pos);
     document.addEventListener('mousedown', () => this.mouseClicked())
   }
 

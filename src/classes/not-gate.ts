@@ -13,8 +13,8 @@ export class NotGate implements Drawable {
   ) {
     this.width = textWidth('NOT') + 40;
 
-    this.inputA = new InputNode(this.pos.copy().add(createVector(-this.width / 1.7, 0)));
-    this.output = new OutputNode(pos.copy().add(createVector(this.width / 1.7, 0)));
+    this.inputA = new InputNode(createVector(-this.width / 1.7, 0), pos);
+    this.output = new OutputNode(createVector(this.width / 1.7, 0), pos);
   }
 
   public draw(): void {

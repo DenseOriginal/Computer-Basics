@@ -50,9 +50,9 @@ var GenericOperator = /** @class */ (function () {
         this.label = label;
         this.height = height;
         this.width = textWidth(label) + 40;
-        this.inputA = new node_1.InputNode(this.pos.copy().add(createVector(-this.width / 1.7, -height * 0.3)));
-        this.inputB = new node_1.InputNode(this.pos.copy().add(createVector(-this.width / 1.7, +height * 0.3)));
-        this.output = new node_1.OutputNode(pos.copy().add(createVector(this.width / 1.7, 0)));
+        this.inputA = new node_1.InputNode(createVector(-this.width / 1.7, -height * 0.3), pos);
+        this.inputB = new node_1.InputNode(createVector(-this.width / 1.7, +height * 0.3), pos);
+        this.output = new node_1.OutputNode(createVector(this.width / 1.7, 0), pos);
     }
     GenericOperator.prototype.draw = function () {
         this.logic();
@@ -104,14 +104,20 @@ function selectNode(node) {
     }
 }
 var InputNode = /** @class */ (function () {
-    function InputNode(pos) {
+    function InputNode(relative, parent) {
         var _this = this;
-        this.pos = pos;
+        this.relative = relative;
+        this.parent = parent;
         this.id = Math.random().toString();
         document.addEventListener('click', function () { return _this.mouseClicked(); });
     }
     Object.defineProperty(InputNode.prototype, "status", {
         get: function () { var _a; return ((_a = this.wire) === null || _a === void 0 ? void 0 : _a.status) || wire_1.Wire.LOW; },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(InputNode.prototype, "pos", {
+        get: function () { return this.parent.copy().add(this.relative); },
         enumerable: false,
         configurable: true
     });
@@ -136,13 +142,19 @@ var InputNode = /** @class */ (function () {
 }());
 exports.InputNode = InputNode;
 var OutputNode = /** @class */ (function () {
-    function OutputNode(pos) {
+    function OutputNode(relative, parent) {
         var _this = this;
-        this.pos = pos;
+        this.relative = relative;
+        this.parent = parent;
         this.wires = [];
         this.id = Math.random().toString();
         document.addEventListener('click', function () { return _this.mouseClicked(); });
     }
+    Object.defineProperty(OutputNode.prototype, "pos", {
+        get: function () { return this.parent.copy().add(this.relative); },
+        enumerable: false,
+        configurable: true
+    });
     OutputNode.prototype.connectWire = function (wire) {
         this.wires.push(wire);
     };
@@ -223,7 +235,7 @@ var Button = /** @class */ (function () {
     function Button(pos) {
         var _this = this;
         this.pos = pos;
-        this.output = new node_1.OutputNode(pos.copy().add(createVector(buttonSize / 1.7, 0)));
+        this.output = new node_1.OutputNode(createVector(buttonSize / 1.7, 0), this.pos);
         document.addEventListener('click', function () { return _this.mouseClicked(); });
     }
     Button.prototype.draw = function () {
@@ -266,7 +278,7 @@ var Clock = /** @class */ (function () {
     function Clock(pos) {
         this.pos = pos;
         this.lastTrigger = 0;
-        this.output = new node_1.OutputNode(pos.copy().add(createVector(size / 1.7, 0)));
+        this.output = new node_1.OutputNode(createVector(size / 1.7, 0), pos);
     }
     Clock.prototype.draw = function () {
         push();
@@ -311,8 +323,8 @@ var NotGate = /** @class */ (function () {
         this.pos = pos;
         this.height = height;
         this.width = textWidth('NOT') + 40;
-        this.inputA = new node_1.InputNode(this.pos.copy().add(createVector(-this.width / 1.7, 0)));
-        this.output = new node_1.OutputNode(pos.copy().add(createVector(this.width / 1.7, 0)));
+        this.inputA = new node_1.InputNode(createVector(-this.width / 1.7, 0), pos);
+        this.output = new node_1.OutputNode(createVector(this.width / 1.7, 0), pos);
     }
     NotGate.prototype.draw = function () {
         this.output.setStatus(!this.inputA.status);
@@ -382,7 +394,7 @@ var PulseButton = /** @class */ (function () {
     function PulseButton(pos) {
         var _this = this;
         this.pos = pos;
-        this.output = new node_1.OutputNode(pos.copy().add(createVector(buttonSize / 1.7, 0)));
+        this.output = new node_1.OutputNode(createVector(buttonSize / 1.7, 0), pos);
         document.addEventListener('mousedown', function () { return _this.mouseClicked(); });
     }
     PulseButton.prototype.draw = function () {
