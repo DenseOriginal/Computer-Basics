@@ -22,19 +22,34 @@ function selectNode(node: InputNode | OutputNode): void {
   }
 }
 
-export class InputNode implements Drawable {
-  private wire?: Wire;
+abstract class GenericNode implements Drawable {
   readonly id = Math.random().toString();
-
-  get status(): Status { return this.wire?.status || Wire.LOW; }
-  get pos(): Vector { return this.parent.copy().add(this.relative); }
+  get pos(): Vector { return this.parentPos.copy().add(this.relativePos); }
 
   constructor(
-    private relative: Vector,
-    private parent: Vector,
+    private relativePos: Vector,
+    private parentPos: Vector,
   ) {
-    document.addEventListener('click', () => this.mouseClicked())
+    document.addEventListener('click', () => this.mouseClicked());
   }
+
+  public abstract connectWire(wire: Wire): void
+
+  abstract draw(): void;
+  private mouseClicked() {
+    const distSq = (this.pos.x - mouseX) ** 2 + (this.pos.y - mouseY) ** 2;
+    const dist = Math.sqrt(distSq);
+
+    if(dist < radius) {
+      selectNode(this as unknown as InputNode | OutputNode);
+    }
+  }
+}
+
+export class InputNode extends GenericNode {
+  private wire?: Wire;
+
+  get status(): Status { return this.wire?.status || Wire.LOW; }
 
   public connectWire(wire: Wire): void {
     this.wire = wire;
@@ -49,28 +64,10 @@ export class InputNode implements Drawable {
     circle(this.pos.x, this.pos.y, radius);
     pop();
   }
-
-  private mouseClicked() {
-    const distSq = (this.pos.x - mouseX) ** 2 + (this.pos.y - mouseY) ** 2;
-    const dist = Math.sqrt(distSq);
-
-    if(dist < radius) {
-      selectNode(this);
-    }
-  }
 }
 
-export class OutputNode implements Drawable {
+export class OutputNode extends GenericNode {
   private wires: Wire[] = [];
-  readonly id = Math.random().toString();
-  get pos(): Vector { return this.parent.copy().add(this.relative); }
-
-  constructor(
-    private relative: Vector,
-    private parent: Vector,
-  ) {
-    document.addEventListener('click', () => this.mouseClicked())
-  }
 
   public connectWire(wire: Wire): void {
     this.wires.push(wire);
@@ -99,14 +96,5 @@ export class OutputNode implements Drawable {
       line(this.pos.x, this.pos.y, mouseX, mouseY);
     }
     pop();
-  }
-
-  private mouseClicked() {
-    const distSq = (this.pos.x - mouseX) ** 2 + (this.pos.y - mouseY) ** 2;
-    const dist = Math.sqrt(distSq);
-
-    if(dist < radius) {
-      selectNode(this);
-    }
   }
 }
