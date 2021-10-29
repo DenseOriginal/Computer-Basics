@@ -3,13 +3,14 @@
 import { AndGate } from "./classes/and-gate";
 import { Button } from "./classes/button";
 import { Clock } from "./classes/clock";
+import { GenericOperator } from "./classes/generic-operators";
 import { Drawable } from "./classes/interfaces";
 import { NotGate } from "./classes/not-gate";
 import { OrGate } from "./classes/or-gate";
 import { Output } from "./classes/output";
 import { PulseButton } from "./classes/pulse-button";
 
-const things: Drawable[] = [];
+const things: GenericOperator[] = [];
 
 (window as any).setup = () => {
 	createCanvas(windowWidth, windowHeight);
@@ -31,7 +32,7 @@ document.querySelectorAll('[data-tool]').forEach(cur => {
 
 type Tools = "button" | "pulse" | "clock" | "output" | "andGate" | "orGate" | "notGate";
 function createOperator(tool: Tools): void {
-	let newThing: Drawable | undefined;
+	let newThing: GenericOperator | undefined;
 
 	switch(tool) {
 		case 'andGate':
@@ -58,4 +59,28 @@ function createOperator(tool: Tools): void {
 	}
 
 	if(newThing) things.push(newThing);
+}
+
+// Loop over all things and find the first one that is clicked
+// Then drag it to the mouse position
+let draggingItem: GenericOperator | undefined;
+
+(window as any).mousePressed = () => {
+	const clicked = things.find(cur => cur.mouseOver());
+	if(clicked) {
+		clicked.dragStart();
+		draggingItem = clicked;
+		return;
+	}
+}
+
+(window as any).mouseDragged = () => {
+	if(draggingItem) {
+		draggingItem.drag();
+	}
+};
+
+(window as any).mouseReleased = () => {
+	draggingItem?.dragEnd();
+	draggingItem = undefined;
 }

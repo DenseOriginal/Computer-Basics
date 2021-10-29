@@ -28,7 +28,7 @@ var AndGate = /** @class */ (function (_super) {
         return _super.call(this, pos, 2, 1, 'AND') || this;
     }
     AndGate.prototype.logic = function () {
-        this.outputs[0].setStatus(this.inputs[0].status && this.inputs[0].status);
+        this.outputs[0].setStatus(this.inputs[0].status && this.inputs[1].status);
     };
     return AndGate;
 }(generic_operators_1.GenericOperator));
@@ -49,6 +49,7 @@ var GenericOperator = /** @class */ (function () {
         this.pos = pos;
         this.inputs = [];
         this.outputs = [];
+        this.dragging = false;
         this.width = typeof labelOrWidth === 'string' ? textWidth(labelOrWidth) + 40 : labelOrWidth;
         this.label = typeof labelOrWidth === 'string' ? labelOrWidth : undefined;
         var most = Math.max(inputsN, outputsN);
@@ -70,6 +71,13 @@ var GenericOperator = /** @class */ (function () {
         fill('#383838');
         rect(this.pos.x, this.pos.y, this.width, this.height, 5, 5, 5, 5);
         this.customDraw();
+        // If mouse is over the operator, draw a white border
+        if (this.mouseOver()) {
+            stroke('#f0ce26');
+            strokeWeight(4);
+            noFill();
+            rect(this.pos.x, this.pos.y, this.width * 1.15, this.height * 1.15, 5, 5, 5, 5);
+        }
         pop();
         this.logic();
         this.inputs.forEach(function (input) { return input.draw(); });
@@ -81,6 +89,24 @@ var GenericOperator = /** @class */ (function () {
             textSize(14);
             text(this.label, this.pos.x, this.pos.y);
         }
+    };
+    GenericOperator.prototype.mouseOver = function () {
+        return mouseX > this.pos.x - this.width / 2 &&
+            mouseX < this.pos.x + this.width / 2 &&
+            mouseY > this.pos.y - this.height / 2 &&
+            mouseY < this.pos.y + this.height / 2;
+    };
+    GenericOperator.prototype.dragStart = function () {
+        this.dragging = true;
+    };
+    GenericOperator.prototype.drag = function () {
+        if (this.dragging) {
+            this.pos.x = mouseX;
+            this.pos.y = mouseY;
+        }
+    };
+    GenericOperator.prototype.dragEnd = function () {
+        this.dragging = false;
     };
     return GenericOperator;
 }());
@@ -459,6 +485,49 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Output = void 0;
+var generic_operators_1 = __webpack_require__(2);
+var Output = /** @class */ (function (_super) {
+    __extends(Output, _super);
+    function Output(pos) {
+        return _super.call(this, pos, 1, 0) || this;
+    }
+    Output.prototype.customDraw = function () {
+        push();
+        rectMode(CENTER);
+        noStroke();
+        // Draw a smaller rectangle to represent the output
+        // A high value is a green rectangle
+        // And a low value is a darkgrey rectangle
+        fill(this.inputs[0].status ? '#a0ffa0' : '#101010');
+        rect(this.pos.x, this.pos.y, this.width * 0.75, this.height * 0.75, 2, 2, 2, 2);
+        pop();
+    };
+    Output.prototype.logic = function () { };
+    return Output;
+}(generic_operators_1.GenericOperator));
+exports.Output = Output;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PulseButton = void 0;
 var generic_operators_1 = __webpack_require__(2);
 var buttonSize = 50;
@@ -496,49 +565,6 @@ var PulseButton = /** @class */ (function (_super) {
     return PulseButton;
 }(generic_operators_1.GenericOperator));
 exports.PulseButton = PulseButton;
-
-
-/***/ }),
-/* 10 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Output = void 0;
-var generic_operators_1 = __webpack_require__(2);
-var Output = /** @class */ (function (_super) {
-    __extends(Output, _super);
-    function Output(pos) {
-        return _super.call(this, pos, 1, 0) || this;
-    }
-    Output.prototype.customDraw = function () {
-        push();
-        rectMode(CENTER);
-        noStroke();
-        // Draw a smaller rectangle to represent the output
-        // A high value is a green rectangle
-        // And a low value is a darkgrey rectangle
-        fill(this.inputs[0].status ? '#a0ffa0' : '#101010');
-        rect(this.pos.x, this.pos.y, this.width * 0.75, this.height * 0.75, 2, 2, 2, 2);
-        pop();
-    };
-    Output.prototype.logic = function () { };
-    return Output;
-}(generic_operators_1.GenericOperator));
-exports.Output = Output;
 
 
 /***/ })
@@ -581,8 +607,8 @@ var button_1 = __webpack_require__(5);
 var clock_1 = __webpack_require__(6);
 var not_gate_1 = __webpack_require__(7);
 var or_gate_1 = __webpack_require__(8);
-var output_1 = __webpack_require__(10);
-var pulse_button_1 = __webpack_require__(9);
+var output_1 = __webpack_require__(9);
+var pulse_button_1 = __webpack_require__(10);
 var things = [];
 window.setup = function () {
     createCanvas(windowWidth, windowHeight);
@@ -626,6 +652,26 @@ function createOperator(tool) {
     if (newThing)
         things.push(newThing);
 }
+// Loop over all things and find the first one that is clicked
+// Then drag it to the mouse position
+var draggingItem;
+window.mousePressed = function () {
+    var clicked = things.find(function (cur) { return cur.mouseOver(); });
+    if (clicked) {
+        clicked.dragStart();
+        draggingItem = clicked;
+        return;
+    }
+};
+window.mouseDragged = function () {
+    if (draggingItem) {
+        draggingItem.drag();
+    }
+};
+window.mouseReleased = function () {
+    draggingItem === null || draggingItem === void 0 ? void 0 : draggingItem.dragEnd();
+    draggingItem = undefined;
+};
 
 })();
 

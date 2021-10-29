@@ -9,6 +9,8 @@ export abstract class GenericOperator implements Drawable {
   public height: number;
   public label?: string;
 
+  private dragging: boolean = false;
+
   constructor(
     public pos: Vector,
     inputsN: number,
@@ -49,6 +51,15 @@ export abstract class GenericOperator implements Drawable {
     rect(this.pos.x, this.pos.y, this.width, this.height, 5, 5, 5, 5);
 
     this.customDraw();
+
+    // If mouse is over the operator, draw a white border
+    if (this.mouseOver()) {
+      stroke('#f0ce26');
+      strokeWeight(4);
+      noFill();
+      rect(this.pos.x, this.pos.y, this.width * 1.15, this.height * 1.15, 5, 5, 5, 5);
+    }
+
     pop();
 
     this.logic();
@@ -63,6 +74,28 @@ export abstract class GenericOperator implements Drawable {
       textSize(14);
       text(this.label, this.pos.x, this.pos.y);
     }
+  }
+
+  public mouseOver(): boolean {
+    return mouseX > this.pos.x - this.width / 2 &&
+      mouseX < this.pos.x + this.width / 2 &&
+      mouseY > this.pos.y - this.height / 2 &&
+      mouseY < this.pos.y + this.height / 2;
+  }
+
+  public dragStart(): void {
+    this.dragging = true;
+  }
+
+  public drag(): void {
+    if (this.dragging) {
+      this.pos.x = mouseX;
+      this.pos.y = mouseY;
+    }
+  }
+
+  public dragEnd(): void {
+    this.dragging = false;
   }
 
   protected abstract logic(): void;
