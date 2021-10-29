@@ -1,30 +1,21 @@
 import { Vector } from "p5";
-import { Drawable } from "./interfaces";
-import { OutputNode } from "./node";
-import { Wire } from "./wire";
+import { GenericOperator } from "./generic-operators";
 
 const buttonSize = 50;
 const pulse = 30;
 
-export class PulseButton implements Drawable {
-  public output: OutputNode;
-
+export class PulseButton extends GenericOperator {
   constructor(
     public pos: Vector
   ) {
-    this.output = new OutputNode(createVector(buttonSize / 1.7, 0), pos);
+    super(pos, 0, 1);
     document.addEventListener('mousedown', () => this.mouseClicked())
   }
 
-  public draw(): void {
+  customDraw(): void {
     push();
 
-    rectMode(CENTER);
-
     noStroke();
-    fill('#383838');
-    rect(this.pos.x, this.pos.y, buttonSize, buttonSize, 5, 5, 5, 5);
-
     fill('#db0000');
     circle(this.pos.x, this.pos.y, buttonSize * 0.7);
 
@@ -35,17 +26,17 @@ export class PulseButton implements Drawable {
     text('1', this.pos.x + buttonSize * 0.7 / 2, this.pos.y + buttonSize * 0.7 / 2);
 
     pop();
-
-    this.output.draw();
   }
+
+  logic(): void { }
 
   private mouseClicked(): void {
     const distSq = (this.pos.x - mouseX) ** 2 + (this.pos.y - mouseY) ** 2;
     const dist = Math.sqrt(distSq);
 
     if(dist < buttonSize * 0.7 / 2) {
-      this.output.setStatus(true);
-      setTimeout(() => this.output.setStatus(false), pulse);
+      this.outputs[0].setStatus(true);
+      setTimeout(() => this.outputs[0].setStatus(false), pulse);
     }
   }
 }

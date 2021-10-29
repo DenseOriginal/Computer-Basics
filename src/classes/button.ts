@@ -1,20 +1,17 @@
 import { Vector } from "p5";
-import { Drawable } from "./interfaces";
-import { OutputNode } from "./node";
+import { GenericOperator } from "./generic-operators";
 
 const buttonSize = 50;
 
-export class Button implements Drawable {
-  public output: OutputNode;
-
+export class Button extends GenericOperator {
   constructor(
-    public pos: Vector
+    pos: Vector,
   ) {
-    this.output = new OutputNode(createVector(buttonSize / 1.7, 0), this.pos);
+    super(pos, 0, 1, buttonSize);
     document.addEventListener('click', () => this.mouseClicked())
   }
 
-  public draw(): void {
+  customDraw() {
     push();
 
     rectMode(CENTER);
@@ -27,16 +24,16 @@ export class Button implements Drawable {
     circle(this.pos.x, this.pos.y, buttonSize * 0.7);
 
     pop();
-
-    this.output.draw();
   }
+
+  logic(): void { }
 
   private mouseClicked(): void {
     const distSq = (this.pos.x - mouseX) ** 2 + (this.pos.y - mouseY) ** 2;
     const dist = Math.sqrt(distSq);
 
     if(dist < buttonSize * 0.7 / 2) {
-      this.output.flip();
+      this.outputs[0].flip();
     }
   }
 }

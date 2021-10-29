@@ -3,10 +3,10 @@ import { GenericOperator } from "./generic-operators";
 
 export class OrGate extends GenericOperator {
   constructor(pos: Vector) {
-    super(pos, 'OR');
+    super(pos, 2, 1, 'OR');
   }
   
   logic() {
-    this.output.setStatus(this.inputA.status || this.inputB.status);
+    this.outputs[0].setStatus(this.inputs[0].status || this.inputs[1].status);
   }
 }

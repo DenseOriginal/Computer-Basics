@@ -3,10 +3,10 @@ import { GenericOperator } from "./generic-operators";
 
 export class AndGate extends GenericOperator {
   constructor(pos: Vector) {
-    super(pos, 'AND');
+    super(pos, 2, 1, 'AND');
   }
   
   logic() {
-    this.output.setStatus(this.inputA.status && this.inputB.status);
+    this.outputs[0].setStatus(this.inputs[0].status && this.inputs[0].status);
   }
 }

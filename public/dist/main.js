@@ -25,10 +25,10 @@ var generic_operators_1 = __webpack_require__(2);
 var AndGate = /** @class */ (function (_super) {
     __extends(AndGate, _super);
     function AndGate(pos) {
-        return _super.call(this, pos, 'AND') || this;
+        return _super.call(this, pos, 2, 1, 'AND') || this;
     }
     AndGate.prototype.logic = function () {
-        this.output.setStatus(this.inputA.status && this.inputB.status);
+        this.outputs[0].setStatus(this.inputs[0].status && this.inputs[0].status);
     };
     return AndGate;
 }(generic_operators_1.GenericOperator));
@@ -44,31 +44,43 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GenericOperator = void 0;
 var node_1 = __webpack_require__(3);
 var GenericOperator = /** @class */ (function () {
-    function GenericOperator(pos, label, height) {
-        if (height === void 0) { height = 50; }
+    function GenericOperator(pos, inputsN, outputsN, labelOrWidth) {
+        if (labelOrWidth === void 0) { labelOrWidth = 50; }
         this.pos = pos;
-        this.label = label;
-        this.height = height;
-        this.width = textWidth(label) + 40;
-        this.inputA = new node_1.InputNode(createVector(-this.width / 1.7, -height * 0.3), pos);
-        this.inputB = new node_1.InputNode(createVector(-this.width / 1.7, +height * 0.3), pos);
-        this.output = new node_1.OutputNode(createVector(this.width / 1.7, 0), pos);
+        this.inputs = [];
+        this.outputs = [];
+        this.width = typeof labelOrWidth === 'string' ? textWidth(labelOrWidth) + 40 : labelOrWidth;
+        this.label = typeof labelOrWidth === 'string' ? labelOrWidth : undefined;
+        var most = Math.max(inputsN, outputsN);
+        this.height = Math.max(most * 25, 50);
+        // Generate input nodes and space evenly on the left side
+        for (var i = 0; i < inputsN; i++) {
+            this.inputs.push(new node_1.InputNode(createVector(-this.width / 1.7, (-this.height / 2 + (i * this.height / inputsN)) + this.height / inputsN / 2), pos));
+        }
+        // Generate output nodes and space evenly on the right side
+        for (var i = 0; i < outputsN; i++) {
+            this.outputs.push(new node_1.OutputNode(createVector(this.width / 1.7, (-this.height / 2 + (i * this.height / outputsN)) + this.height / outputsN / 2), pos));
+        }
     }
     GenericOperator.prototype.draw = function () {
-        this.logic();
         push();
         rectMode(CENTER);
         textAlign(CENTER, CENTER);
         noStroke();
         fill('#383838');
         rect(this.pos.x, this.pos.y, this.width, this.height, 5, 5, 5, 5);
-        fill('#fff');
-        textSize(14);
-        text(this.label, this.pos.x, this.pos.y);
+        this.customDraw();
         pop();
-        this.inputA.draw();
-        this.inputB.draw();
-        this.output.draw();
+        this.logic();
+        this.inputs.forEach(function (input) { return input.draw(); });
+        this.outputs.forEach(function (output) { return output.draw(); });
+    };
+    GenericOperator.prototype.customDraw = function () {
+        if (this.label) {
+            fill('#fff');
+            textSize(14);
+            text(this.label, this.pos.x, this.pos.y);
+        }
     };
     return GenericOperator;
 }());
@@ -224,21 +236,34 @@ exports.Wire = Wire;
 
 /***/ }),
 /* 5 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Button = void 0;
-var node_1 = __webpack_require__(3);
+var generic_operators_1 = __webpack_require__(2);
 var buttonSize = 50;
-var Button = /** @class */ (function () {
+var Button = /** @class */ (function (_super) {
+    __extends(Button, _super);
     function Button(pos) {
-        var _this = this;
-        this.pos = pos;
-        this.output = new node_1.OutputNode(createVector(buttonSize / 1.7, 0), this.pos);
+        var _this = _super.call(this, pos, 0, 1, buttonSize) || this;
         document.addEventListener('click', function () { return _this.mouseClicked(); });
+        return _this;
     }
-    Button.prototype.draw = function () {
+    Button.prototype.customDraw = function () {
         push();
         rectMode(CENTER);
         noStroke();
@@ -247,45 +272,55 @@ var Button = /** @class */ (function () {
         fill('#db0000');
         circle(this.pos.x, this.pos.y, buttonSize * 0.7);
         pop();
-        this.output.draw();
     };
+    Button.prototype.logic = function () { };
     Button.prototype.mouseClicked = function () {
         var distSq = Math.pow((this.pos.x - mouseX), 2) + Math.pow((this.pos.y - mouseY), 2);
         var dist = Math.sqrt(distSq);
         if (dist < buttonSize * 0.7 / 2) {
-            this.output.flip();
+            this.outputs[0].flip();
         }
     };
     return Button;
-}());
+}(generic_operators_1.GenericOperator));
 exports.Button = Button;
 
 
 /***/ }),
 /* 6 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Clock = void 0;
-var node_1 = __webpack_require__(3);
+var generic_operators_1 = __webpack_require__(2);
 var wire_1 = __webpack_require__(4);
 var size = 50;
 var cycle = 1000;
 // This is to prevent the wire being high for 1 frame
 var activationTime = 50;
-var Clock = /** @class */ (function () {
+var Clock = /** @class */ (function (_super) {
+    __extends(Clock, _super);
     function Clock(pos) {
-        this.pos = pos;
-        this.lastTrigger = 0;
-        this.output = new node_1.OutputNode(createVector(size / 1.7, 0), pos);
+        var _this = _super.call(this, pos, 0, 1) || this;
+        _this.lastTrigger = 0;
+        return _this;
     }
-    Clock.prototype.draw = function () {
+    Clock.prototype.customDraw = function () {
         push();
-        rectMode(CENTER);
-        noStroke();
-        fill('#383838');
-        rect(this.pos.x, this.pos.y, size, size, 5, 5, 5, 5);
         var deltaTime = millis() - this.lastTrigger;
         // Draw arc for the cycle, TWO_PI is the full circle
         var arcAngle = map(deltaTime, 0, cycle, 0, TWO_PI);
@@ -294,55 +329,52 @@ var Clock = /** @class */ (function () {
         noFill();
         arc(this.pos.x, this.pos.y, size * 0.6, size * 0.6, 0, arcAngle);
         if (deltaTime > cycle - activationTime) {
-            this.output.setStatus(wire_1.Wire.HIGH);
+            this.outputs[0].setStatus(wire_1.Wire.HIGH);
         }
         else {
-            this.output.setStatus(wire_1.Wire.LOW);
+            this.outputs[0].setStatus(wire_1.Wire.LOW);
         }
         if (deltaTime > cycle)
             this.lastTrigger = millis();
         pop();
-        this.output.draw();
     };
+    Clock.prototype.logic = function () { };
     return Clock;
-}());
+}(generic_operators_1.GenericOperator));
 exports.Clock = Clock;
 
 
 /***/ }),
 /* 7 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NotGate = void 0;
-var node_1 = __webpack_require__(3);
-var NotGate = /** @class */ (function () {
-    function NotGate(pos, height) {
-        if (height === void 0) { height = 50; }
-        this.pos = pos;
-        this.height = height;
-        this.width = textWidth('NOT') + 40;
-        this.inputA = new node_1.InputNode(createVector(-this.width / 1.7, 0), pos);
-        this.output = new node_1.OutputNode(createVector(this.width / 1.7, 0), pos);
+var generic_operators_1 = __webpack_require__(2);
+var NotGate = /** @class */ (function (_super) {
+    __extends(NotGate, _super);
+    function NotGate(pos) {
+        return _super.call(this, pos, 1, 1, 'NOT') || this;
     }
-    NotGate.prototype.draw = function () {
-        this.output.setStatus(!this.inputA.status);
-        push();
-        rectMode(CENTER);
-        textAlign(CENTER, CENTER);
-        noStroke();
-        fill('#383838');
-        rect(this.pos.x, this.pos.y, this.width, this.height, 5, 5, 5, 5);
-        fill('#fff');
-        textSize(14);
-        text('NOT', this.pos.x, this.pos.y);
-        pop();
-        this.inputA.draw();
-        this.output.draw();
+    NotGate.prototype.logic = function () {
+        this.outputs[0].setStatus(!this.inputs[0].status);
     };
     return NotGate;
-}());
+}(generic_operators_1.GenericOperator));
 exports.NotGate = NotGate;
 
 
@@ -370,10 +402,10 @@ var generic_operators_1 = __webpack_require__(2);
 var OrGate = /** @class */ (function (_super) {
     __extends(OrGate, _super);
     function OrGate(pos) {
-        return _super.call(this, pos, 'OR') || this;
+        return _super.call(this, pos, 2, 1, 'OR') || this;
     }
     OrGate.prototype.logic = function () {
-        this.output.setStatus(this.inputA.status || this.inputB.status);
+        this.outputs[0].setStatus(this.inputs[0].status || this.inputs[1].status);
     };
     return OrGate;
 }(generic_operators_1.GenericOperator));
@@ -382,27 +414,38 @@ exports.OrGate = OrGate;
 
 /***/ }),
 /* 9 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PulseButton = void 0;
-var node_1 = __webpack_require__(3);
+var generic_operators_1 = __webpack_require__(2);
 var buttonSize = 50;
 var pulse = 30;
-var PulseButton = /** @class */ (function () {
+var PulseButton = /** @class */ (function (_super) {
+    __extends(PulseButton, _super);
     function PulseButton(pos) {
-        var _this = this;
-        this.pos = pos;
-        this.output = new node_1.OutputNode(createVector(buttonSize / 1.7, 0), pos);
+        var _this = _super.call(this, pos, 0, 1) || this;
+        _this.pos = pos;
         document.addEventListener('mousedown', function () { return _this.mouseClicked(); });
+        return _this;
     }
-    PulseButton.prototype.draw = function () {
+    PulseButton.prototype.customDraw = function () {
         push();
-        rectMode(CENTER);
         noStroke();
-        fill('#383838');
-        rect(this.pos.x, this.pos.y, buttonSize, buttonSize, 5, 5, 5, 5);
         fill('#db0000');
         circle(this.pos.x, this.pos.y, buttonSize * 0.7);
         // Draw a little '1' in the lower right corner
@@ -411,19 +454,19 @@ var PulseButton = /** @class */ (function () {
         fill('#fff');
         text('1', this.pos.x + buttonSize * 0.7 / 2, this.pos.y + buttonSize * 0.7 / 2);
         pop();
-        this.output.draw();
     };
+    PulseButton.prototype.logic = function () { };
     PulseButton.prototype.mouseClicked = function () {
         var _this = this;
         var distSq = Math.pow((this.pos.x - mouseX), 2) + Math.pow((this.pos.y - mouseY), 2);
         var dist = Math.sqrt(distSq);
         if (dist < buttonSize * 0.7 / 2) {
-            this.output.setStatus(true);
-            setTimeout(function () { return _this.output.setStatus(false); }, pulse);
+            this.outputs[0].setStatus(true);
+            setTimeout(function () { return _this.outputs[0].setStatus(false); }, pulse);
         }
     };
     return PulseButton;
-}());
+}(generic_operators_1.GenericOperator));
 exports.PulseButton = PulseButton;
 
 

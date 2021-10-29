@@ -1,4 +1,5 @@
 import { Vector } from "p5";
+import { GenericOperator } from "./generic-operators";
 import { Drawable } from "./interfaces";
 import { OutputNode } from "./node";
 import { Wire } from "./wire";
@@ -9,24 +10,17 @@ const cycle = 1000;
 // This is to prevent the wire being high for 1 frame
 const activationTime = 50;
 
-export class Clock implements Drawable {
-  public output: OutputNode;
+export class Clock extends GenericOperator {
   private lastTrigger: number = 0;
 
   constructor(
-    public pos: Vector
+    pos: Vector,
   ) {
-    this.output = new OutputNode(createVector(size / 1.7, 0), pos);
+    super(pos, 0, 1);
   }
 
-  public draw(): void {
+  customDraw(): void {
     push();
-
-    rectMode(CENTER);
-
-    noStroke();
-    fill('#383838');
-    rect(this.pos.x, this.pos.y, size, size, 5, 5, 5, 5);
 
     const deltaTime = millis() - this.lastTrigger;
     
@@ -37,14 +31,13 @@ export class Clock implements Drawable {
     noFill();
     arc(this.pos.x, this.pos.y, size * 0.6, size * 0.6, 0, arcAngle);
 
-    if(deltaTime > cycle - activationTime) { this.output.setStatus(Wire.HIGH) }
-    else { this.output.setStatus(Wire.LOW) }
+    if(deltaTime > cycle - activationTime) { this.outputs[0].setStatus(Wire.HIGH) }
+    else { this.outputs[0].setStatus(Wire.LOW) }
 
     if(deltaTime > cycle) this.lastTrigger = millis();
 
-
     pop();
-
-    this.output.draw();
   }
+
+  logic(): void { }
 }
