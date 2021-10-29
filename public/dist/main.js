@@ -89,9 +89,22 @@ exports.GenericOperator = GenericOperator;
 
 /***/ }),
 /* 3 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.OutputNode = exports.InputNode = void 0;
 var wire_1 = __webpack_require__(4);
@@ -115,26 +128,48 @@ function selectNode(node) {
         }
     }
 }
-var InputNode = /** @class */ (function () {
-    function InputNode(relative, parent) {
+var GenericNode = /** @class */ (function () {
+    function GenericNode(relativePos, parentPos) {
         var _this = this;
-        this.relative = relative;
-        this.parent = parent;
+        this.relativePos = relativePos;
+        this.parentPos = parentPos;
         this.id = Math.random().toString();
         document.addEventListener('click', function () { return _this.mouseClicked(); });
+    }
+    Object.defineProperty(GenericNode.prototype, "pos", {
+        get: function () { return this.parentPos.copy().add(this.relativePos); },
+        enumerable: false,
+        configurable: true
+    });
+    GenericNode.prototype.clickHandler = function () { };
+    GenericNode.prototype.mouseClicked = function () {
+        var distSq = Math.pow((this.pos.x - mouseX), 2) + Math.pow((this.pos.y - mouseY), 2);
+        var dist = Math.sqrt(distSq);
+        if (dist < radius) {
+            this.clickHandler();
+            selectNode(this);
+        }
+    };
+    return GenericNode;
+}());
+var InputNode = /** @class */ (function (_super) {
+    __extends(InputNode, _super);
+    function InputNode() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     Object.defineProperty(InputNode.prototype, "status", {
         get: function () { var _a; return ((_a = this.wire) === null || _a === void 0 ? void 0 : _a.status) || wire_1.Wire.LOW; },
         enumerable: false,
         configurable: true
     });
-    Object.defineProperty(InputNode.prototype, "pos", {
-        get: function () { return this.parent.copy().add(this.relative); },
-        enumerable: false,
-        configurable: true
-    });
     InputNode.prototype.connectWire = function (wire) {
         this.wire = wire;
+    };
+    InputNode.prototype.removeWire = function (wire) {
+        var _a;
+        if (((_a = this.wire) === null || _a === void 0 ? void 0 : _a.id) == wire.id) {
+            this.wire = undefined;
+        }
     };
     InputNode.prototype.draw = function () {
         push();
@@ -143,32 +178,26 @@ var InputNode = /** @class */ (function () {
         circle(this.pos.x, this.pos.y, radius);
         pop();
     };
-    InputNode.prototype.mouseClicked = function () {
-        var distSq = Math.pow((this.pos.x - mouseX), 2) + Math.pow((this.pos.y - mouseY), 2);
-        var dist = Math.sqrt(distSq);
-        if (dist < radius) {
-            selectNode(this);
+    InputNode.prototype.clickHandler = function () {
+        if (!outputNode && this.wire && keyCode == SHIFT) {
+            this.wire.destroy();
         }
     };
     return InputNode;
-}());
+}(GenericNode));
 exports.InputNode = InputNode;
-var OutputNode = /** @class */ (function () {
-    function OutputNode(relative, parent) {
-        var _this = this;
-        this.relative = relative;
-        this.parent = parent;
-        this.wires = [];
-        this.id = Math.random().toString();
-        document.addEventListener('click', function () { return _this.mouseClicked(); });
+var OutputNode = /** @class */ (function (_super) {
+    __extends(OutputNode, _super);
+    function OutputNode() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.wires = [];
+        return _this;
     }
-    Object.defineProperty(OutputNode.prototype, "pos", {
-        get: function () { return this.parent.copy().add(this.relative); },
-        enumerable: false,
-        configurable: true
-    });
     OutputNode.prototype.connectWire = function (wire) {
         this.wires.push(wire);
+    };
+    OutputNode.prototype.removeWire = function (wire) {
+        this.wires = this.wires.filter(function (w) { return w.id != wire.id; });
     };
     OutputNode.prototype.flip = function () {
         this.wires.forEach(function (wire) { return wire.status = !wire.status; });
@@ -189,15 +218,8 @@ var OutputNode = /** @class */ (function () {
         }
         pop();
     };
-    OutputNode.prototype.mouseClicked = function () {
-        var distSq = Math.pow((this.pos.x - mouseX), 2) + Math.pow((this.pos.y - mouseY), 2);
-        var dist = Math.sqrt(distSq);
-        if (dist < radius) {
-            selectNode(this);
-        }
-    };
     return OutputNode;
-}());
+}(GenericNode));
 exports.OutputNode = OutputNode;
 
 
@@ -211,6 +233,7 @@ exports.Wire = void 0;
 var Wire = /** @class */ (function () {
     function Wire() {
         this.status = false;
+        this.id = Math.random().toString(36).substr(2, 9);
     }
     Wire.prototype.draw = function () {
         push();
@@ -226,6 +249,11 @@ var Wire = /** @class */ (function () {
         this.output = output;
         input.connectWire(this);
         output.connectWire(this);
+    };
+    Wire.prototype.destroy = function () {
+        var _a, _b;
+        (_a = this.input) === null || _a === void 0 ? void 0 : _a.removeWire(this);
+        (_b = this.output) === null || _b === void 0 ? void 0 : _b.removeWire(this);
     };
     Wire.HIGH = true;
     Wire.LOW = false;

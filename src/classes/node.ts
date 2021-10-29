@@ -34,13 +34,16 @@ abstract class GenericNode implements Drawable {
   }
 
   public abstract connectWire(wire: Wire): void
+  public abstract removeWire(wire: Wire): void
 
   abstract draw(): void;
+  protected clickHandler(): void {}
   private mouseClicked() {
     const distSq = (this.pos.x - mouseX) ** 2 + (this.pos.y - mouseY) ** 2;
     const dist = Math.sqrt(distSq);
 
     if(dist < radius) {
+      this.clickHandler();
       selectNode(this as unknown as InputNode | OutputNode);
     }
   }
@@ -55,6 +58,12 @@ export class InputNode extends GenericNode {
     this.wire = wire;
   }
 
+  public removeWire(wire: Wire): void {
+    if(this.wire?.id == wire.id) {
+      this.wire = undefined;
+    }
+  }
+
   public draw(): void {
     push();
 
@@ -64,6 +73,12 @@ export class InputNode extends GenericNode {
     circle(this.pos.x, this.pos.y, radius);
     pop();
   }
+
+  protected clickHandler(): void {
+    if(!outputNode && this.wire && keyCode == SHIFT) {
+      this.wire.destroy();
+    }
+  }
 }
 
 export class OutputNode extends GenericNode {
@@ -71,6 +86,10 @@ export class OutputNode extends GenericNode {
 
   public connectWire(wire: Wire): void {
     this.wires.push(wire);
+  }
+
+  public removeWire(wire: Wire): void {
+    this.wires = this.wires.filter(w => w.id != wire.id);
   }
 
   public flip(): void {

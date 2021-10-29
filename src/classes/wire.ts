@@ -5,6 +5,7 @@ export type Status = boolean;
 
 export class Wire implements Drawable {
   public status: Status = false;
+  public readonly id: string = Math.random().toString(36).substr(2, 9);
 
   public output: OutputNode | undefined;
   public input: InputNode | undefined;
@@ -27,11 +28,16 @@ export class Wire implements Drawable {
     pop();
   }
 
-  connect(input: InputNode, output: OutputNode) {
+  public connect(input: InputNode, output: OutputNode) {
     this.input = input;
     this.output = output;
     input.connectWire(this);
     output.connectWire(this);
+  }
+
+  public destroy() {
+    this.input?.removeWire(this);
+    this.output?.removeWire(this);
   }
 
   static HIGH: true = true;
