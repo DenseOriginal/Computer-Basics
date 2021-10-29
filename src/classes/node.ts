@@ -5,19 +5,21 @@ import { Status, Wire } from "./wire";
 const radius = 15;
 
 // This is stuff for creating a new wire between to nodes
-let selectedNode: OutputNode | undefined;
+let outputNode: OutputNode | undefined;
 function selectNode(node: InputNode | OutputNode): void {
-  if(!selectedNode && node instanceof OutputNode) { selectedNode = node; return; }
-  if(selectedNode && node instanceof OutputNode) { return; }
-  if(!selectedNode) return;
+  if(node instanceof OutputNode) {
+    
+    if(!outputNode) { outputNode = node; return; }
+    if(outputNode.id == node.id) { outputNode = undefined; }
 
-  if(selectedNode && node instanceof InputNode) {
-    const newWire = new Wire();
-    newWire.connect(node, selectedNode);
-  
-    selectedNode = undefined;
+  } else {
+
+    if(outputNode) {
+      new Wire().connect(node, outputNode);
+      outputNode = undefined;
+    }
+
   }
-
 }
 
 export class InputNode implements Drawable {
@@ -41,14 +43,8 @@ export class InputNode implements Drawable {
 
     noStroke();
 
-    fill(selectedNode?.id == this.id ? '#395699' : '#677087');
+    fill('#677087');
     circle(this.pos.x, this.pos.y, radius);
-
-    if(selectedNode?.id == this.id) {
-      strokeWeight(4);
-      stroke('#383838');
-      line(this.pos.x, this.pos.y, mouseX, mouseY);
-    }
     pop();
   }
 
@@ -90,10 +86,10 @@ export class OutputNode implements Drawable {
     noStroke();
     this.wires.forEach(wire => wire.draw());
 
-    fill(selectedNode?.id == this.id ? '#395699' : '#677087');
+    fill(outputNode?.id == this.id ? '#395699' : '#677087');
     circle(this.pos.x, this.pos.y, radius);
 
-    if(selectedNode?.id == this.id) {
+    if(outputNode?.id == this.id) {
       strokeWeight(4);
       stroke('#383838');
       line(this.pos.x, this.pos.y, mouseX, mouseY);
