@@ -470,6 +470,49 @@ var PulseButton = /** @class */ (function (_super) {
 exports.PulseButton = PulseButton;
 
 
+/***/ }),
+/* 10 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Output = void 0;
+var generic_operators_1 = __webpack_require__(2);
+var Output = /** @class */ (function (_super) {
+    __extends(Output, _super);
+    function Output(pos) {
+        return _super.call(this, pos, 1, 0) || this;
+    }
+    Output.prototype.customDraw = function () {
+        push();
+        rectMode(CENTER);
+        noStroke();
+        // Draw a smaller rectangle to represent the output
+        // A high value is a green rectangle
+        // And a low value is a darkgrey rectangle
+        fill(this.inputs[0].status ? '#a0ffa0' : '#101010');
+        rect(this.pos.x, this.pos.y, this.width * 0.75, this.height * 0.75, 2, 2, 2, 2);
+        pop();
+    };
+    Output.prototype.logic = function () { };
+    return Output;
+}(generic_operators_1.GenericOperator));
+exports.Output = Output;
+
+
 /***/ })
 /******/ 	]);
 /************************************************************************/
@@ -510,6 +553,7 @@ var button_1 = __webpack_require__(5);
 var clock_1 = __webpack_require__(6);
 var not_gate_1 = __webpack_require__(7);
 var or_gate_1 = __webpack_require__(8);
+var output_1 = __webpack_require__(10);
 var pulse_button_1 = __webpack_require__(9);
 var things = [];
 window.setup = function () {
@@ -540,6 +584,9 @@ function createOperator(tool) {
             break;
         case 'clock':
             newThing = new clock_1.Clock(createVector(mouseX, mouseY));
+            break;
+        case 'output':
+            newThing = new output_1.Output(createVector(mouseX, mouseY));
             break;
         case 'notGate':
             newThing = new not_gate_1.NotGate(createVector(mouseX, mouseY));
