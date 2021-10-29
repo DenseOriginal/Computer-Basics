@@ -7,6 +7,6 @@ export class AndGate extends GenericOperator {
   }
   
   logic() {
-    this.outputs[0].setStatus(this.inputs[0].status && this.inputs[0].status);
+    this.outputs[0].setStatus(this.inputs[0].status && this.inputs[1].status);
   }
 }
