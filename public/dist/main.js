@@ -82,7 +82,7 @@ exports.GenericOperator = GenericOperator;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.OutputNode = exports.InputNode = void 0;
-var wire_1 = __webpack_require__(5);
+var wire_1 = __webpack_require__(4);
 var radius = 15;
 // This is stuff for creating a new wire between to nodes
 var outputNode;
@@ -178,8 +178,7 @@ exports.OutputNode = OutputNode;
 
 
 /***/ }),
-/* 4 */,
-/* 5 */
+/* 4 */
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -212,7 +211,7 @@ exports.Wire = Wire;
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -248,6 +247,54 @@ var Button = /** @class */ (function () {
     return Button;
 }());
 exports.Button = Button;
+
+
+/***/ }),
+/* 6 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Clock = void 0;
+var node_1 = __webpack_require__(3);
+var wire_1 = __webpack_require__(4);
+var size = 50;
+var cycle = 1000;
+// This is to prevent the wire being high for 1 frame
+var activationTime = 50;
+var Clock = /** @class */ (function () {
+    function Clock(pos) {
+        this.pos = pos;
+        this.lastTrigger = 0;
+        this.output = new node_1.OutputNode(pos.copy().add(createVector(size / 1.7, 0)));
+    }
+    Clock.prototype.draw = function () {
+        push();
+        rectMode(CENTER);
+        noStroke();
+        fill('#383838');
+        rect(this.pos.x, this.pos.y, size, size, 5, 5, 5, 5);
+        var deltaTime = millis() - this.lastTrigger;
+        // Draw arc for the cycle, TWO_PI is the full circle
+        var arcAngle = map(deltaTime, 0, cycle, 0, TWO_PI);
+        stroke('#f9f9f9');
+        strokeWeight(4);
+        noFill();
+        arc(this.pos.x, this.pos.y, size * 0.6, size * 0.6, 0, arcAngle);
+        if (deltaTime > cycle - activationTime) {
+            this.output.setStatus(wire_1.Wire.HIGH);
+        }
+        else {
+            this.output.setStatus(wire_1.Wire.LOW);
+        }
+        if (deltaTime > cycle)
+            this.lastTrigger = millis();
+        pop();
+        this.output.draw();
+    };
+    return Clock;
+}());
+exports.Clock = Clock;
 
 
 /***/ }),
@@ -357,14 +404,13 @@ var exports = __webpack_exports__;
 /// <reference path="../node_modules/@types/p5/global.d.ts"/>
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 var and_gate_1 = __webpack_require__(1);
-var button_1 = __webpack_require__(6);
+var button_1 = __webpack_require__(5);
+var clock_1 = __webpack_require__(6);
 var not_gate_1 = __webpack_require__(7);
 var or_gate_1 = __webpack_require__(8);
 var things = [];
 window.setup = function () {
-    var _a;
     createCanvas(windowWidth, windowHeight);
-    (_a = document.querySelector('canvas')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', function () { return mousePressed(); });
 };
 window.draw = function () {
     background(255);
@@ -385,6 +431,9 @@ function createOperator(tool) {
             break;
         case 'button':
             newThing = new button_1.Button(createVector(mouseX, mouseY));
+            break;
+        case 'clock':
+            newThing = new clock_1.Clock(createVector(mouseX, mouseY));
             break;
         case 'notGate':
             newThing = new not_gate_1.NotGate(createVector(mouseX, mouseY));
