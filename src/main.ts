@@ -3,7 +3,6 @@
 import { AndGate } from "./classes/and-gate";
 import { Button } from "./classes/button";
 import { Drawable } from "./classes/interfaces";
-import { InputNode } from "./classes/node";
 import { NotGate } from "./classes/not-gate";
 import { OrGate } from "./classes/or-gate";
 

@@ -82,24 +82,25 @@ exports.GenericOperator = GenericOperator;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.OutputNode = exports.InputNode = void 0;
-var wire_1 = __webpack_require__(4);
+var wire_1 = __webpack_require__(5);
 var radius = 15;
 // This is stuff for creating a new wire between to nodes
-var selectedNode;
+var outputNode;
 function selectNode(node) {
-    if (!selectedNode && node instanceof OutputNode) {
-        selectedNode = node;
-        return;
+    if (node instanceof OutputNode) {
+        if (!outputNode) {
+            outputNode = node;
+            return;
+        }
+        if (outputNode.id == node.id) {
+            outputNode = undefined;
+        }
     }
-    if (selectedNode && node instanceof OutputNode) {
-        return;
-    }
-    if (!selectedNode)
-        return;
-    if (selectedNode && node instanceof InputNode) {
-        var newWire = new wire_1.Wire();
-        newWire.connect(node, selectedNode);
-        selectedNode = undefined;
+    else {
+        if (outputNode) {
+            new wire_1.Wire().connect(node, outputNode);
+            outputNode = undefined;
+        }
     }
 }
 var InputNode = /** @class */ (function () {
@@ -120,13 +121,8 @@ var InputNode = /** @class */ (function () {
     InputNode.prototype.draw = function () {
         push();
         noStroke();
-        fill((selectedNode === null || selectedNode === void 0 ? void 0 : selectedNode.id) == this.id ? '#395699' : '#677087');
+        fill('#677087');
         circle(this.pos.x, this.pos.y, radius);
-        if ((selectedNode === null || selectedNode === void 0 ? void 0 : selectedNode.id) == this.id) {
-            strokeWeight(4);
-            stroke('#383838');
-            line(this.pos.x, this.pos.y, mouseX, mouseY);
-        }
         pop();
     };
     InputNode.prototype.mouseClicked = function () {
@@ -160,9 +156,9 @@ var OutputNode = /** @class */ (function () {
         push();
         noStroke();
         this.wires.forEach(function (wire) { return wire.draw(); });
-        fill((selectedNode === null || selectedNode === void 0 ? void 0 : selectedNode.id) == this.id ? '#395699' : '#677087');
+        fill((outputNode === null || outputNode === void 0 ? void 0 : outputNode.id) == this.id ? '#395699' : '#677087');
         circle(this.pos.x, this.pos.y, radius);
-        if ((selectedNode === null || selectedNode === void 0 ? void 0 : selectedNode.id) == this.id) {
+        if ((outputNode === null || outputNode === void 0 ? void 0 : outputNode.id) == this.id) {
             strokeWeight(4);
             stroke('#383838');
             line(this.pos.x, this.pos.y, mouseX, mouseY);
@@ -182,7 +178,8 @@ exports.OutputNode = OutputNode;
 
 
 /***/ }),
-/* 4 */
+/* 4 */,
+/* 5 */
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -215,7 +212,7 @@ exports.Wire = Wire;
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -254,7 +251,7 @@ exports.Button = Button;
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -291,7 +288,7 @@ exports.NotGate = NotGate;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -360,9 +357,9 @@ var exports = __webpack_exports__;
 /// <reference path="../node_modules/@types/p5/global.d.ts"/>
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 var and_gate_1 = __webpack_require__(1);
-var button_1 = __webpack_require__(5);
-var not_gate_1 = __webpack_require__(6);
-var or_gate_1 = __webpack_require__(7);
+var button_1 = __webpack_require__(6);
+var not_gate_1 = __webpack_require__(7);
+var or_gate_1 = __webpack_require__(8);
 var things = [];
 window.setup = function () {
     var _a;
