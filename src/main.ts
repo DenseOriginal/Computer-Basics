@@ -6,6 +6,7 @@ import { Clock } from "./classes/clock";
 import { Drawable } from "./classes/interfaces";
 import { NotGate } from "./classes/not-gate";
 import { OrGate } from "./classes/or-gate";
+import { PulseButton } from "./classes/pulse-button";
 
 const things: Drawable[] = [];
 
@@ -27,7 +28,7 @@ document.querySelectorAll('[data-tool]').forEach(cur => {
 });
 
 
-type Tools = "button" | "clock" | "andGate" | "orGate" | "notGate";
+type Tools = "button" | "pulse" | "clock" | "andGate" | "orGate" | "notGate";
 function createOperator(tool: Tools): void {
 	let newThing: Drawable | undefined;
 
@@ -37,6 +38,9 @@ function createOperator(tool: Tools): void {
 			break;
 		case 'button':
 			newThing = new Button(createVector(mouseX, mouseY));
+			break;
+		case 'pulse':
+			newThing = new PulseButton(createVector(mouseX, mouseY));
 			break;
 		case 'clock':
 			newThing = new Clock(createVector(mouseX, mouseY));
