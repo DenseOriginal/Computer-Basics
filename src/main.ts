@@ -18,9 +18,18 @@ const things: Drawable[] = [];
 	things.forEach(cur => cur.draw());
 }
 
-function mousePressed(): void {
+// Add event listener for dragend event on all list events with data-tool value
+document.querySelectorAll('[data-tool]').forEach(cur => {
+	cur.addEventListener('dragend', () => {
+		const tool = cur.getAttribute('data-tool');
+		createOperator(tool as Tools);
+	});
+});
+
+
+type Tools = "button" | "andGate" | "orGate" | "notGate";
+function createOperator(tool: Tools): void {
 	let newThing: Drawable | undefined;
-	const tool = (document.getElementById('tool-selection') as HTMLInputElement).value;
 
 	switch(tool) {
 		case 'andGate':

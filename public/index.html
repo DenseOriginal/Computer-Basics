@@ -13,13 +13,19 @@
   </head>
   <body>
     <div class="tool-selection">
-      <label for="tool">Tool selection</label>
+      <!-- <label for="tool">Tool selection</label>
       <select name="tool" id="tool-selection">
         <option value="button">Button</option>
         <option value="andGate">AND</option>
         <option value="orGate">OR</option>
         <option value="notGate">NOT</option>
-      </select>
+      </select> -->
+      <ul>
+        <li draggable="true" data-tool="button">Button</li>
+        <li draggable="true" data-tool="andGate">AND</li>
+        <li draggable="true" data-tool="orGate">OR</li>
+        <li draggable="true" data-tool="notGate">NOT</li>
+      </ul>
     </div>
     <script src="./dist/main.js"></script>
   </body>

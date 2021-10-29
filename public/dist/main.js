@@ -370,9 +370,15 @@ window.draw = function () {
     background(255);
     things.forEach(function (cur) { return cur.draw(); });
 };
-function mousePressed() {
+// Add event listener for dragend event on all list events with data-tool value
+document.querySelectorAll('[data-tool]').forEach(function (cur) {
+    cur.addEventListener('dragend', function () {
+        var tool = cur.getAttribute('data-tool');
+        createOperator(tool);
+    });
+});
+function createOperator(tool) {
     var newThing;
-    var tool = document.getElementById('tool-selection').value;
     switch (tool) {
         case 'andGate':
             newThing = new and_gate_1.AndGate(createVector(mouseX, mouseY));
