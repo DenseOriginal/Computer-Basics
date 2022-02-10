@@ -23,12 +23,17 @@ const things: GenericOperator[] = [];
 // Add event listener for dragend event on all list events with data-tool value
 document.querySelectorAll('[data-tool]').forEach(cur => {
 	cur.addEventListener('dragend', () => {
+		// When an HTML Element is dragged and then dropped
+		// Then find out what tool it is, and create a new tool
 		const tool = cur.getAttribute('data-tool');
 		createOperator(tool as Tools);
 	});
 });
 
 
+// Helper for creating a new operator on the screen
+// It instantiates a new class corosponding to the tool that was passed in
+// And then it appends the newly created operator to the things array
 type Tools = "button" | "pulse" | "clock" | "output" | "andGate" | "orGate" | "notGate";
 function createOperator(tool: Tools): void {
 	let newThing: GenericOperator | undefined;
@@ -74,12 +79,15 @@ let draggingItem: GenericOperator | undefined;
 }
 
 (window as any).mouseDragged = () => {
+	// If there's an item being dragged, then call the drag() method on them
 	if(draggingItem) {
 		draggingItem.drag();
 	}
 };
 
 (window as any).mouseReleased = () => {
+	// When ever the mouse is released, call the dragEnd() method on the item
+	// Wether or not we're actually dragging an item, using the optional chaining
 	draggingItem?.dragEnd();
 	draggingItem = undefined;
 }
