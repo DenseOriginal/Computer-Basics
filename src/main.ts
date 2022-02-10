@@ -4,6 +4,7 @@ import { AndGate } from "./classes/and-gate";
 import { Button } from "./classes/button";
 import { Clock } from "./classes/clock";
 import { GenericOperator } from "./classes/generic-operators";
+import { Input } from "./classes/input";
 import { NotGate } from "./classes/not-gate";
 import { OrGate } from "./classes/or-gate";
 import { Output } from "./classes/output";
@@ -34,7 +35,7 @@ document.querySelectorAll('[data-tool]').forEach(cur => {
 // Helper for creating a new operator on the screen
 // It instantiates a new class corosponding to the tool that was passed in
 // And then it appends the newly created operator to the operators array
-type Tools = "button" | "pulse" | "clock" | "output" | "andGate" | "orGate" | "notGate";
+type Tools = "button" | "pulse" | "clock" | "output" | "input" | "andGate" | "orGate" | "notGate";
 function createOperator(tool: Tools): void {
 	let newOperator: GenericOperator | undefined;
 
@@ -53,6 +54,9 @@ function createOperator(tool: Tools): void {
 			break;
 		case 'output':
 			newOperator = new Output(createVector(mouseX, mouseY));
+			break;
+		case 'input':
+			newOperator = new Input(createVector(mouseX, mouseY));
 			break;
 		case 'notGate':
 			newOperator = new NotGate(createVector(mouseX, mouseY));
