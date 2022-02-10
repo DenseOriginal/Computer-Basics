@@ -60,8 +60,8 @@ export abstract class GenericOperator implements Drawable {
 
     // If mouse is over the operator, draw a white border
     if (this.mouseOver()) {
-      stroke('#f0ce26');
-      strokeWeight(4);
+      stroke('#95d8ff');
+      strokeWeight(3);
       noFill();
       rect(this.pos.x, this.pos.y, this.width * 1.15, this.height * 1.15, 5, 5, 5, 5);
     }
