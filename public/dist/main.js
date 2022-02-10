@@ -50,8 +50,13 @@ var GenericOperator = /** @class */ (function () {
         this.inputs = [];
         this.outputs = [];
         this.dragging = false;
+        // Calculate the width and label
+        // Depending on what type labelOrWidth is
         this.width = typeof labelOrWidth === 'string' ? textWidth(labelOrWidth) + 40 : labelOrWidth;
         this.label = typeof labelOrWidth === 'string' ? labelOrWidth : undefined;
+        // Calculate the height of this operator
+        // For every node give it 25 pixels of space
+        // If there's 1 node or less, then just set the height as 50 pixels
         var most = Math.max(inputsN, outputsN);
         this.height = Math.max(most * 25, 50);
         // Generate input nodes and space evenly on the left side
@@ -67,6 +72,7 @@ var GenericOperator = /** @class */ (function () {
         push();
         rectMode(CENTER);
         textAlign(CENTER, CENTER);
+        // Draw the darkgrey background
         noStroke();
         fill('#383838');
         rect(this.pos.x, this.pos.y, this.width, this.height, 5, 5, 5, 5);
@@ -80,10 +86,13 @@ var GenericOperator = /** @class */ (function () {
         }
         pop();
         this.logic();
+        // Draw all the nodes attached to this operator
         this.inputs.forEach(function (input) { return input.draw(); });
         this.outputs.forEach(function (output) { return output.draw(); });
     };
     GenericOperator.prototype.customDraw = function () {
+        // This method just draws the label of the operator by default
+        // Child classes can overwrite this method and implement their own draw
         if (this.label) {
             fill('#fff');
             textSize(14);
@@ -136,21 +145,28 @@ exports.OutputNode = exports.InputNode = void 0;
 var wire_1 = __webpack_require__(4);
 var radius = 15;
 // This is stuff for creating a new wire between to nodes
-var outputNode;
+var selectedOutputNode;
 function selectNode(node) {
     if (node instanceof OutputNode) {
-        if (!outputNode) {
-            outputNode = node;
+        // If the clicked node is an output
+        // And we haven't selected an outputNode already
+        // Then set selectedOutputNode to the node that was clicked on
+        if (!selectedOutputNode) {
+            selectedOutputNode = node;
             return;
         }
-        if (outputNode.id == node.id) {
-            outputNode = undefined;
+        // If the clicked node is the same node, that was already pressed
+        // Then just cancel the selection
+        if (selectedOutputNode.id == node.id) {
+            selectedOutputNode = undefined;
         }
     }
     else {
-        if (outputNode) {
-            new wire_1.Wire().connect(node, outputNode);
-            outputNode = undefined;
+        // If we have already selected an outputNode
+        // And we have clicked an input node, then connect the two nodes with a wire
+        if (selectedOutputNode) {
+            new wire_1.Wire().connect(node, selectedOutputNode);
+            selectedOutputNode = undefined;
         }
     }
 }
@@ -167,11 +183,14 @@ var GenericNode = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
-    GenericNode.prototype.clickHandler = function () { };
+    GenericNode.prototype.clickHandler = function () { }; // Empty handler for clicking on the node (only used by output node)
     GenericNode.prototype.mouseClicked = function () {
         var distSq = Math.pow((this.pos.x - mouseX), 2) + Math.pow((this.pos.y - mouseY), 2);
         var dist = Math.sqrt(distSq);
         if (dist < radius) {
+            // If the mouse is over the node
+            // Then call the clickHandler on this node
+            // And call the selectNode function
             this.clickHandler();
             selectNode(this);
         }
@@ -205,7 +224,8 @@ var InputNode = /** @class */ (function (_super) {
         pop();
     };
     InputNode.prototype.clickHandler = function () {
-        if (!outputNode && this.wire && keyCode == SHIFT) {
+        // Shift click to delete the node
+        if (!selectedOutputNode && this.wire && keyCode == SHIFT) {
             this.wire.destroy();
         }
     };
@@ -223,9 +243,12 @@ var OutputNode = /** @class */ (function (_super) {
         this.wires.push(wire);
     };
     OutputNode.prototype.removeWire = function (wire) {
+        // When removing a wire, look through the wires array
+        // And filter out the one with a matching id
         this.wires = this.wires.filter(function (w) { return w.id != wire.id; });
     };
     OutputNode.prototype.flip = function () {
+        // Simply flip all the wires
         this.wires.forEach(function (wire) { return wire.status = !wire.status; });
     };
     OutputNode.prototype.setStatus = function (status) {
@@ -234,10 +257,13 @@ var OutputNode = /** @class */ (function (_super) {
     OutputNode.prototype.draw = function () {
         push();
         noStroke();
+        // Call the draw method on all it's wires
         this.wires.forEach(function (wire) { return wire.draw(); });
-        fill((outputNode === null || outputNode === void 0 ? void 0 : outputNode.id) == this.id ? '#395699' : '#677087');
+        fill((selectedOutputNode === null || selectedOutputNode === void 0 ? void 0 : selectedOutputNode.id) == this.id ? '#395699' : '#677087');
         circle(this.pos.x, this.pos.y, radius);
-        if ((outputNode === null || outputNode === void 0 ? void 0 : outputNode.id) == this.id) {
+        // If this node is clicked, then highlight it with a different color
+        // And draw a line from the node to the mouse
+        if ((selectedOutputNode === null || selectedOutputNode === void 0 ? void 0 : selectedOutputNode.id) == this.id) {
             strokeWeight(4);
             stroke('#383838');
             line(this.pos.x, this.pos.y, mouseX, mouseY);
@@ -417,6 +443,42 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Input = void 0;
+var generic_operators_1 = __webpack_require__(2);
+var Input = /** @class */ (function (_super) {
+    __extends(Input, _super);
+    function Input(pos) {
+        var _this = _super.call(this, pos, 0, 1, 'Input') || this;
+        _this.state = false;
+        return _this;
+    }
+    Input.prototype.logic = function () {
+        this.outputs[0].setStatus(this.state);
+    };
+    return Input;
+}(generic_operators_1.GenericOperator));
+exports.Input = Input;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NotGate = void 0;
 var generic_operators_1 = __webpack_require__(2);
 var NotGate = /** @class */ (function (_super) {
@@ -433,7 +495,7 @@ exports.NotGate = NotGate;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -467,7 +529,7 @@ exports.OrGate = OrGate;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -490,7 +552,9 @@ var generic_operators_1 = __webpack_require__(2);
 var Output = /** @class */ (function (_super) {
     __extends(Output, _super);
     function Output(pos) {
-        return _super.call(this, pos, 1, 0) || this;
+        var _this = _super.call(this, pos, 1, 0) || this;
+        _this.state = false;
+        return _this;
     }
     Output.prototype.customDraw = function () {
         push();
@@ -503,14 +567,16 @@ var Output = /** @class */ (function (_super) {
         rect(this.pos.x, this.pos.y, this.width * 0.75, this.height * 0.75, 2, 2, 2, 2);
         pop();
     };
-    Output.prototype.logic = function () { };
+    Output.prototype.logic = function () {
+        this.state = this.inputs[0].status;
+    };
     return Output;
 }(generic_operators_1.GenericOperator));
 exports.Output = Output;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -605,58 +671,67 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 var and_gate_1 = __webpack_require__(1);
 var button_1 = __webpack_require__(5);
 var clock_1 = __webpack_require__(6);
-var not_gate_1 = __webpack_require__(7);
-var or_gate_1 = __webpack_require__(8);
-var output_1 = __webpack_require__(9);
-var pulse_button_1 = __webpack_require__(10);
-var things = [];
+var input_1 = __webpack_require__(7);
+var not_gate_1 = __webpack_require__(8);
+var or_gate_1 = __webpack_require__(9);
+var output_1 = __webpack_require__(10);
+var pulse_button_1 = __webpack_require__(11);
+var operators = [];
 window.setup = function () {
     createCanvas(windowWidth, windowHeight);
 };
 window.draw = function () {
     background(255);
-    things.forEach(function (cur) { return cur.draw(); });
+    operators.forEach(function (cur) { return cur.draw(); });
 };
 // Add event listener for dragend event on all list events with data-tool value
 document.querySelectorAll('[data-tool]').forEach(function (cur) {
     cur.addEventListener('dragend', function () {
+        // When an HTML Element is dragged and then dropped
+        // Then find out what tool it is, and create a new tool
         var tool = cur.getAttribute('data-tool');
         createOperator(tool);
     });
 });
 function createOperator(tool) {
-    var newThing;
+    var newOperator;
     switch (tool) {
         case 'andGate':
-            newThing = new and_gate_1.AndGate(createVector(mouseX, mouseY));
+            newOperator = new and_gate_1.AndGate(createVector(mouseX, mouseY));
             break;
         case 'button':
-            newThing = new button_1.Button(createVector(mouseX, mouseY));
+            newOperator = new button_1.Button(createVector(mouseX, mouseY));
             break;
         case 'pulse':
-            newThing = new pulse_button_1.PulseButton(createVector(mouseX, mouseY));
+            newOperator = new pulse_button_1.PulseButton(createVector(mouseX, mouseY));
             break;
         case 'clock':
-            newThing = new clock_1.Clock(createVector(mouseX, mouseY));
+            newOperator = new clock_1.Clock(createVector(mouseX, mouseY));
             break;
         case 'output':
-            newThing = new output_1.Output(createVector(mouseX, mouseY));
+            newOperator = new output_1.Output(createVector(mouseX, mouseY));
+            break;
+        case 'input':
+            newOperator = new input_1.Input(createVector(mouseX, mouseY));
             break;
         case 'notGate':
-            newThing = new not_gate_1.NotGate(createVector(mouseX, mouseY));
+            newOperator = new not_gate_1.NotGate(createVector(mouseX, mouseY));
             break;
         case 'orGate':
-            newThing = new or_gate_1.OrGate(createVector(mouseX, mouseY));
+            newOperator = new or_gate_1.OrGate(createVector(mouseX, mouseY));
             break;
+        default:
+            var exhaustiveCheck = tool;
+            throw new Error("Unhandled tool case: " + exhaustiveCheck);
     }
-    if (newThing)
-        things.push(newThing);
+    if (newOperator)
+        operators.push(newOperator);
 }
-// Loop over all things and find the first one that is clicked
+// Loop over all operators and find the first one that is clicked
 // Then drag it to the mouse position
 var draggingItem;
 window.mousePressed = function () {
-    var clicked = things.find(function (cur) { return cur.mouseOver(); });
+    var clicked = operators.find(function (cur) { return cur.mouseOver(); });
     if (clicked) {
         clicked.dragStart();
         draggingItem = clicked;
@@ -664,11 +739,14 @@ window.mousePressed = function () {
     }
 };
 window.mouseDragged = function () {
+    // If there's an item being dragged, then call the drag() method on them
     if (draggingItem) {
         draggingItem.drag();
     }
 };
 window.mouseReleased = function () {
+    // When ever the mouse is released, call the dragEnd() method on the item
+    // Wether or not we're actually dragging an item, using the optional chaining
     draggingItem === null || draggingItem === void 0 ? void 0 : draggingItem.dragEnd();
     draggingItem = undefined;
 };

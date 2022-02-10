@@ -26,6 +26,8 @@ ul {
     list-style-type: none;
     display: flex;
     justify-content: space-between;
+    height: 34.5px;
+    align-items: center;
 }
 
 li {
@@ -43,4 +45,17 @@ li:hover {
 
 li:active {
     background-color: rgb(255, 134, 134);
+}
+
+.spacer {
+    content: "";
+    margin: 0 12px;
+    padding: 0;
+    height: 75%;
+    width: 1px;
+    background-color: grey;
+}
+
+#new-operator {
+    cursor: pointer;
 }
