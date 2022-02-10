@@ -5,18 +5,25 @@ import { Status, Wire } from "./wire";
 const radius = 15;
 
 // This is stuff for creating a new wire between to nodes
-let outputNode: OutputNode | undefined;
+let selectedOutputNode: OutputNode | undefined;
 function selectNode(node: InputNode | OutputNode): void {
   if(node instanceof OutputNode) {
     
-    if(!outputNode) { outputNode = node; return; }
-    if(outputNode.id == node.id) { outputNode = undefined; }
+    // If the clicked node is an output
+    // And we haven't selected an outputNode already
+    // Then set selectedOutputNode to the node that was clicked on
+    if(!selectedOutputNode) { selectedOutputNode = node; return; }
 
+    // If the clicked node is the same node, that was already pressed
+    // Then just cancel the selection
+    if(selectedOutputNode.id == node.id) { selectedOutputNode = undefined; }
   } else {
 
-    if(outputNode) {
-      new Wire().connect(node, outputNode);
-      outputNode = undefined;
+    // If we have already selected an outputNode
+    // And we have clicked an input node, then connect the two nodes with a wire
+    if(selectedOutputNode) {
+      new Wire().connect(node, selectedOutputNode);
+      selectedOutputNode = undefined;
     }
 
   }
@@ -33,16 +40,22 @@ abstract class GenericNode implements Drawable {
     document.addEventListener('click', () => this.mouseClicked());
   }
 
+  // Abstract methods for connecting and removing a wire
+  // The input and output nodes will implement a slightly different method
+  // This is because the output node can have multiple wires, and the input can only have 1
   public abstract connectWire(wire: Wire): void
   public abstract removeWire(wire: Wire): void
 
   abstract draw(): void;
-  protected clickHandler(): void {}
+  protected clickHandler(): void {} // Empty handler for clicking on the node (only used by output node)
   private mouseClicked() {
     const distSq = (this.pos.x - mouseX) ** 2 + (this.pos.y - mouseY) ** 2;
     const dist = Math.sqrt(distSq);
 
     if(dist < radius) {
+      // If the mouse is over the node
+      // Then call the clickHandler on this node
+      // And call the selectNode function
       this.clickHandler();
       selectNode(this as unknown as InputNode | OutputNode);
     }
@@ -75,7 +88,8 @@ export class InputNode extends GenericNode {
   }
 
   protected clickHandler(): void {
-    if(!outputNode && this.wire && keyCode == SHIFT) {
+    // Shift click to delete the node
+    if(!selectedOutputNode && this.wire && keyCode == SHIFT) {
       this.wire.destroy();
     }
   }
@@ -89,10 +103,13 @@ export class OutputNode extends GenericNode {
   }
 
   public removeWire(wire: Wire): void {
+    // When removing a wire, look through the wires array
+    // And filter out the one with a matching id
     this.wires = this.wires.filter(w => w.id != wire.id);
   }
 
   public flip(): void {
+    // Simply flip all the wires
     this.wires.forEach(wire => wire.status = !wire.status);
   }
 
@@ -104,12 +121,15 @@ export class OutputNode extends GenericNode {
     push();
 
     noStroke();
+    // Call the draw method on all it's wires
     this.wires.forEach(wire => wire.draw());
 
-    fill(outputNode?.id == this.id ? '#395699' : '#677087');
+    fill(selectedOutputNode?.id == this.id ? '#395699' : '#677087');
     circle(this.pos.x, this.pos.y, radius);
 
-    if(outputNode?.id == this.id) {
+    // If this node is clicked, then highlight it with a different color
+    // And draw a line from the node to the mouse
+    if(selectedOutputNode?.id == this.id) {
       strokeWeight(4);
       stroke('#383838');
       line(this.pos.x, this.pos.y, mouseX, mouseY);
