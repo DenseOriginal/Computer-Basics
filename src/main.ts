@@ -4,7 +4,6 @@ import { AndGate } from "./classes/and-gate";
 import { Button } from "./classes/button";
 import { Clock } from "./classes/clock";
 import { GenericOperator } from "./classes/generic-operators";
-import { Drawable } from "./classes/interfaces";
 import { NotGate } from "./classes/not-gate";
 import { OrGate } from "./classes/or-gate";
 import { Output } from "./classes/output";
