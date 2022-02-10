@@ -9,7 +9,7 @@ import { OrGate } from "./classes/or-gate";
 import { Output } from "./classes/output";
 import { PulseButton } from "./classes/pulse-button";
 
-const things: GenericOperator[] = [];
+const operators: GenericOperator[] = [];
 
 (window as any).setup = () => {
 	createCanvas(windowWidth, windowHeight);
@@ -17,7 +17,7 @@ const things: GenericOperator[] = [];
 
 (window as any).draw = () => {
 	background(255);
-	things.forEach(cur => cur.draw());
+	operators.forEach(cur => cur.draw());
 }
 
 // Add event listener for dragend event on all list events with data-tool value
@@ -33,44 +33,44 @@ document.querySelectorAll('[data-tool]').forEach(cur => {
 
 // Helper for creating a new operator on the screen
 // It instantiates a new class corosponding to the tool that was passed in
-// And then it appends the newly created operator to the things array
+// And then it appends the newly created operator to the operators array
 type Tools = "button" | "pulse" | "clock" | "output" | "andGate" | "orGate" | "notGate";
 function createOperator(tool: Tools): void {
-	let newThing: GenericOperator | undefined;
+	let newOperator: GenericOperator | undefined;
 
 	switch(tool) {
 		case 'andGate':
-			newThing = new AndGate(createVector(mouseX, mouseY));
+			newOperator = new AndGate(createVector(mouseX, mouseY));
 			break;
 		case 'button':
-			newThing = new Button(createVector(mouseX, mouseY));
+			newOperator = new Button(createVector(mouseX, mouseY));
 			break;
 		case 'pulse':
-			newThing = new PulseButton(createVector(mouseX, mouseY));
+			newOperator = new PulseButton(createVector(mouseX, mouseY));
 			break;
 		case 'clock':
-			newThing = new Clock(createVector(mouseX, mouseY));
+			newOperator = new Clock(createVector(mouseX, mouseY));
 			break;
 		case 'output':
-			newThing = new Output(createVector(mouseX, mouseY));
+			newOperator = new Output(createVector(mouseX, mouseY));
 			break;
 		case 'notGate':
-			newThing = new NotGate(createVector(mouseX, mouseY));
+			newOperator = new NotGate(createVector(mouseX, mouseY));
 			break;
 		case 'orGate':
-			newThing = new OrGate(createVector(mouseX, mouseY));
+			newOperator = new OrGate(createVector(mouseX, mouseY));
 			break;
 	}
 
-	if(newThing) things.push(newThing);
+	if(newOperator) operators.push(newOperator);
 }
 
-// Loop over all things and find the first one that is clicked
+// Loop over all operators and find the first one that is clicked
 // Then drag it to the mouse position
 let draggingItem: GenericOperator | undefined;
 
 (window as any).mousePressed = () => {
-	const clicked = things.find(cur => cur.mouseOver());
+	const clicked = operators.find(cur => cur.mouseOver());
 	if(clicked) {
 		clicked.dragStart();
 		draggingItem = clicked;
