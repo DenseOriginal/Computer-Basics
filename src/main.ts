@@ -1,11 +1,10 @@
 /// <reference path="../node_modules/@types/p5/global.d.ts"/>
 
 import { AndGate } from "./classes/and-gate";
-import { Button } from "./classes/button";
+import { Input } from "./classes/input";
 import { Clock } from "./classes/clock";
 import { CombinedOperators } from "./classes/combined-operators";
 import { GenericOperator } from "./classes/generic-operators";
-import { Input } from "./classes/input";
 import { SavedCombinedOperator } from "./classes/interfaces";
 import { NotGate } from "./classes/not-gate";
 import { OrGate } from "./classes/or-gate";
@@ -38,16 +37,13 @@ document.querySelectorAll('[data-tool]').forEach(cur => {
 // Helper for creating a new operator on the screen
 // It instantiates a new class corosponding to the tool that was passed in
 // And then it appends the newly created operator to the operators array
-type Tools = "button" | "pulse" | "clock" | "output" | "input" | "andGate" | "orGate" | "notGate";
+type Tools = "pulse" | "clock" | "input" | "output" | "andGate" | "orGate" | "notGate";
 function createOperator(tool: Tools): void {
 	let newOperator: GenericOperator | undefined;
 
 	switch (tool) {
 		case 'andGate':
 			newOperator = new AndGate(createVector(mouseX, mouseY));
-			break;
-		case 'button':
-			newOperator = new Button(createVector(mouseX, mouseY));
 			break;
 		case 'pulse':
 			newOperator = new PulseButton(createVector(mouseX, mouseY));

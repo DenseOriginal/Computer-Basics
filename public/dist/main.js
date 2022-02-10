@@ -333,17 +333,18 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Button = void 0;
+exports.Input = void 0;
 var generic_operators_1 = __webpack_require__(2);
 var buttonSize = 50;
-var Button = /** @class */ (function (_super) {
-    __extends(Button, _super);
-    function Button(pos) {
+var Input = /** @class */ (function (_super) {
+    __extends(Input, _super);
+    function Input(pos) {
         var _this = _super.call(this, pos, 0, 1, buttonSize) || this;
+        _this.state = false;
         document.addEventListener('click', function () { return _this.mouseClicked(); });
         return _this;
     }
-    Button.prototype.customDraw = function () {
+    Input.prototype.customDraw = function () {
         push();
         rectMode(CENTER);
         noStroke();
@@ -353,17 +354,19 @@ var Button = /** @class */ (function (_super) {
         circle(this.pos.x, this.pos.y, buttonSize * 0.7);
         pop();
     };
-    Button.prototype.logic = function () { };
-    Button.prototype.mouseClicked = function () {
+    Input.prototype.logic = function () {
+        this.outputs[0].setStatus(this.state);
+    };
+    Input.prototype.mouseClicked = function () {
         var distSq = Math.pow((this.pos.x - mouseX), 2) + Math.pow((this.pos.y - mouseY), 2);
         var dist = Math.sqrt(distSq);
         if (dist < buttonSize * 0.7 / 2) {
-            this.outputs[0].flip();
+            this.state = !this.state;
         }
     };
-    return Button;
+    return Input;
 }(generic_operators_1.GenericOperator));
-exports.Button = Button;
+exports.Input = Input;
 
 
 /***/ }),
@@ -445,8 +448,8 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CombinedOperators = void 0;
 var generic_operators_1 = __webpack_require__(2);
-var input_1 = __webpack_require__(8);
-var output_1 = __webpack_require__(9);
+var input_1 = __webpack_require__(5);
+var output_1 = __webpack_require__(8);
 var CombinedOperators = /** @class */ (function (_super) {
     __extends(CombinedOperators, _super);
     function CombinedOperators(pos, operators, name) {
@@ -499,42 +502,6 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Input = void 0;
-var generic_operators_1 = __webpack_require__(2);
-var Input = /** @class */ (function (_super) {
-    __extends(Input, _super);
-    function Input(pos) {
-        var _this = _super.call(this, pos, 0, 1, 'Input') || this;
-        _this.state = false;
-        return _this;
-    }
-    Input.prototype.logic = function () {
-        this.outputs[0].setStatus(this.state);
-    };
-    return Input;
-}(generic_operators_1.GenericOperator));
-exports.Input = Input;
-
-
-/***/ }),
-/* 9 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Output = void 0;
 var generic_operators_1 = __webpack_require__(2);
 var Output = /** @class */ (function (_super) {
@@ -564,7 +531,7 @@ exports.Output = Output;
 
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -598,7 +565,7 @@ exports.NotGate = NotGate;
 
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -632,7 +599,7 @@ exports.OrGate = OrGate;
 
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -726,14 +693,13 @@ var exports = __webpack_exports__;
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 var and_gate_1 = __webpack_require__(1);
-var button_1 = __webpack_require__(5);
+var input_1 = __webpack_require__(5);
 var clock_1 = __webpack_require__(6);
 var combined_operators_1 = __webpack_require__(7);
-var input_1 = __webpack_require__(8);
-var not_gate_1 = __webpack_require__(10);
-var or_gate_1 = __webpack_require__(11);
-var output_1 = __webpack_require__(9);
-var pulse_button_1 = __webpack_require__(12);
+var not_gate_1 = __webpack_require__(9);
+var or_gate_1 = __webpack_require__(10);
+var output_1 = __webpack_require__(8);
+var pulse_button_1 = __webpack_require__(11);
 var operators = [];
 var savedCombinedOperator = {};
 window.setup = function () {
@@ -757,9 +723,6 @@ function createOperator(tool) {
     switch (tool) {
         case 'andGate':
             newOperator = new and_gate_1.AndGate(createVector(mouseX, mouseY));
-            break;
-        case 'button':
-            newOperator = new button_1.Button(createVector(mouseX, mouseY));
             break;
         case 'pulse':
             newOperator = new pulse_button_1.PulseButton(createVector(mouseX, mouseY));
