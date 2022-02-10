@@ -17,9 +17,14 @@ export abstract class GenericOperator implements Drawable {
     outputsN: number,
     labelOrWidth: string | number = 50,
   ) {
+    // Calculate the width and label
+    // Depending on what type labelOrWidth is
     this.width = typeof labelOrWidth === 'string' ? textWidth(labelOrWidth) + 40 : labelOrWidth;
     this.label = typeof labelOrWidth === 'string' ? labelOrWidth : undefined;
 
+    // Calculate the height of this operator
+    // For every node give it 25 pixels of space
+    // If there's 1 node or less, then just set the height as 50 pixels
     const most = Math.max(inputsN, outputsN);
     this.height = Math.max(most * 25, 50);
 
@@ -46,6 +51,7 @@ export abstract class GenericOperator implements Drawable {
     rectMode(CENTER);
     textAlign(CENTER, CENTER);
 
+    // Draw the darkgrey background
     noStroke();
     fill('#383838');
     rect(this.pos.x, this.pos.y, this.width, this.height, 5, 5, 5, 5);
@@ -64,11 +70,14 @@ export abstract class GenericOperator implements Drawable {
 
     this.logic();
 
+    // Draw all the nodes attached to this operator
     this.inputs.forEach(input => input.draw());
     this.outputs.forEach(output => output.draw());
   }
 
   protected customDraw(): void {
+    // This method just draws the label of the operator by default
+    // Child classes can overwrite this method and implement their own draw
     if(this.label) {
       fill('#fff');
       textSize(14);
