@@ -102,10 +102,12 @@ document.getElementById('new-operator')?.addEventListener('click', () => {
 	});
 });
 
+// Get the deletion zone element, and show it when the user is dragging an operator around
+const deletionZone = document.getElementById('deletion-zone');
+
 // Loop over all operators and find the first one that is clicked
 // Then drag it to the mouse position
 let draggingItem: GenericOperator | undefined;
-
 (window as any).mousePressed = () => {
 	const clicked = operators.find(cur => cur.mouseOver());
 	if (clicked) {
@@ -119,6 +121,9 @@ let draggingItem: GenericOperator | undefined;
 	// If there's an item being dragged, then call the drag() method on them
 	if (draggingItem) {
 		draggingItem.drag();
+
+		// Show the deletion zone
+		deletionZone?.classList.remove('hidden');
 	}
 };
 
@@ -126,5 +131,20 @@ let draggingItem: GenericOperator | undefined;
 	// When ever the mouse is released, call the dragEnd() method on the item
 	// Wether or not we're actually dragging an item, using the optional chaining
 	draggingItem?.dragEnd();
+
+	// Hide the deletion zone, even if it wasn't show
+	deletionZone?.classList.add('hidden');
+
+	// If the user dropped the an operator in the deletionZone
+	// Then destroy it
+	if(draggingItem && mouseY < 100) {
+		// Tell the operator to destroy all it's connections
+		draggingItem.destroy();
+
+		// Find an remove the operator from the array of operators
+		const indexOfOperator = operators.findIndex(op => op == draggingItem);
+		operators.splice(indexOfOperator, 1);
+	}
+
 	draggingItem = undefined;
 }

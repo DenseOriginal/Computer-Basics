@@ -107,5 +107,12 @@ export abstract class GenericOperator implements Drawable {
     this.dragging = false;
   }
 
+  public destroy(): void {
+    // This method will tell all nodes to destroy all wires
+    // So that no other operators are connected to this
+    this.inputs.forEach(cur => cur.destroy());
+    this.outputs.forEach(cur => cur.destroy());
+  }
+
   abstract logic(): void;
 }

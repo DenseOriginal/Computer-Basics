@@ -66,3 +66,33 @@ li:active {
 #new-operator {
     cursor: pointer;
 }
+
+#deletion-zone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    width: 100vw;
+    height: 100px;
+    display: grid;
+    place-items: center;
+    background-color: rgba(224, 83, 83, 0.493);
+    opacity: 1;
+    transition: all 300ms;
+}
+
+#deletion-zone:not(.hidden):hover {
+    background-color: rgba(224, 46, 46, 0.808);
+}
+
+#deletion-zone.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#deletion-zone p {
+    font-size: 32px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    color: white;
+}

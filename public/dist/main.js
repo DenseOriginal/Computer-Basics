@@ -117,6 +117,12 @@ var GenericOperator = /** @class */ (function () {
     GenericOperator.prototype.dragEnd = function () {
         this.dragging = false;
     };
+    GenericOperator.prototype.destroy = function () {
+        // This method will tell all nodes to destroy all wires
+        // So that no other operators are connected to this
+        this.inputs.forEach(function (cur) { return cur.destroy(); });
+        this.outputs.forEach(function (cur) { return cur.destroy(); });
+    };
     return GenericOperator;
 }());
 exports.GenericOperator = GenericOperator;
@@ -229,6 +235,10 @@ var InputNode = /** @class */ (function (_super) {
             this.wire.destroy();
         }
     };
+    InputNode.prototype.destroy = function () {
+        var _a;
+        (_a = this.wire) === null || _a === void 0 ? void 0 : _a.destroy();
+    };
     return InputNode;
 }(GenericNode));
 exports.InputNode = InputNode;
@@ -269,6 +279,9 @@ var OutputNode = /** @class */ (function (_super) {
             line(this.pos.x, this.pos.y, mouseX, mouseY);
         }
         pop();
+    };
+    OutputNode.prototype.destroy = function () {
+        this.wires.forEach(function (wire) { return wire.destroy(); });
     };
     return OutputNode;
 }(GenericNode));
@@ -776,6 +789,8 @@ function createOperator(tool) {
         operators.push(newOperator);
     });
 });
+// Get the deletion zone element, and show it when the user is dragging an operator around
+var deletionZone = document.getElementById('deletion-zone');
 // Loop over all operators and find the first one that is clicked
 // Then drag it to the mouse position
 var draggingItem;
@@ -791,12 +806,25 @@ window.mouseDragged = function () {
     // If there's an item being dragged, then call the drag() method on them
     if (draggingItem) {
         draggingItem.drag();
+        // Show the deletion zone
+        deletionZone === null || deletionZone === void 0 ? void 0 : deletionZone.classList.remove('hidden');
     }
 };
 window.mouseReleased = function () {
     // When ever the mouse is released, call the dragEnd() method on the item
     // Wether or not we're actually dragging an item, using the optional chaining
     draggingItem === null || draggingItem === void 0 ? void 0 : draggingItem.dragEnd();
+    // Hide the deletion zone, even if it wasn't show
+    deletionZone === null || deletionZone === void 0 ? void 0 : deletionZone.classList.add('hidden');
+    // If the user dropped the an operator in the deletionZone
+    // Then destroy it
+    if (draggingItem && mouseY < 100) {
+        // Tell the operator to destroy all it's connections
+        draggingItem.destroy();
+        // Find an remove the operator from the array of operators
+        var indexOfOperator = operators.findIndex(function (op) { return op == draggingItem; });
+        operators.splice(indexOfOperator, 1);
+    }
     draggingItem = undefined;
 };
 

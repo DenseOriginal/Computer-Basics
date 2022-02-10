@@ -60,6 +60,10 @@ abstract class GenericNode implements Drawable {
       selectNode(this as unknown as InputNode | OutputNode);
     }
   }
+
+  // Abstract method to remove all wires
+  // This is because input and output nodes handle wires differently
+  public abstract destroy(): void
 }
 
 export class InputNode extends GenericNode {
@@ -92,6 +96,10 @@ export class InputNode extends GenericNode {
     if(!selectedOutputNode && this.wire && keyCode == SHIFT) {
       this.wire.destroy();
     }
+  }
+
+  public destroy(): void {
+    this.wire?.destroy();
   }
 }
 
@@ -135,5 +143,9 @@ export class OutputNode extends GenericNode {
       line(this.pos.x, this.pos.y, mouseX, mouseY);
     }
     pop();
+  }
+
+  public destroy(): void {
+    this.wires.forEach(wire => wire.destroy());
   }
 }
