@@ -107,5 +107,5 @@ export abstract class GenericOperator implements Drawable {
     this.dragging = false;
   }
 
-  protected abstract logic(): void;
+  abstract logic(): void;
 }

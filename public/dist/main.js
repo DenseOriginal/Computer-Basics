@@ -443,21 +443,41 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Input = void 0;
+exports.CombinedOperators = void 0;
 var generic_operators_1 = __webpack_require__(2);
-var Input = /** @class */ (function (_super) {
-    __extends(Input, _super);
-    function Input(pos) {
-        var _this = _super.call(this, pos, 0, 1, 'Input') || this;
-        _this.state = false;
+var input_1 = __webpack_require__(8);
+var output_1 = __webpack_require__(9);
+var CombinedOperators = /** @class */ (function (_super) {
+    __extends(CombinedOperators, _super);
+    function CombinedOperators(pos, operators, name) {
+        var _this = this;
+        // Extract the inputs and outputs from all the operators
+        // And the sort them in order of their pos.y component
+        // This is so that the input/output nodes will match up with the internal input/output operators
+        var inputOperators = operators.filter(function (op) { return op instanceof input_1.Input; }).sort(function (a, b) { return b.pos.y - a.pos.y; });
+        var outputOperators = operators.filter(function (op) { return op instanceof output_1.Output; }).sort(function (a, b) { return b.pos.y - a.pos.y; });
+        // Pass the number of inputs and outputs to the GenericOperator
+        // So that it can create the appopriate amount of nodes
+        _this = _super.call(this, pos, inputOperators.length, outputOperators.length, name) || this;
+        _this.inputOperators = inputOperators;
+        _this.outputOperators = outputOperators;
+        _this.childOperators = operators;
         return _this;
     }
-    Input.prototype.logic = function () {
-        this.outputs[0].setStatus(this.state);
+    CombinedOperators.prototype.logic = function () {
+        var _this = this;
+        // Loop over every input node, and set every internal input operator to the state
+        this.inputs.forEach(function (inp, idx) { return _this.inputOperators[idx].state = inp.status; });
+        // Loop over all the operators and run their logic
+        this.childOperators.forEach(function (op) {
+            op.logic();
+        });
+        // Loop over every output node, and set it's state the match the internal output opetators state
+        this.outputs.forEach(function (out, idx) { return out.setStatus(_this.outputOperators[idx].state); });
     };
-    return Input;
+    return CombinedOperators;
 }(generic_operators_1.GenericOperator));
-exports.Input = Input;
+exports.CombinedOperators = CombinedOperators;
 
 
 /***/ }),
@@ -479,57 +499,25 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NotGate = void 0;
+exports.Input = void 0;
 var generic_operators_1 = __webpack_require__(2);
-var NotGate = /** @class */ (function (_super) {
-    __extends(NotGate, _super);
-    function NotGate(pos) {
-        return _super.call(this, pos, 1, 1, 'NOT') || this;
+var Input = /** @class */ (function (_super) {
+    __extends(Input, _super);
+    function Input(pos) {
+        var _this = _super.call(this, pos, 0, 1, 'Input') || this;
+        _this.state = false;
+        return _this;
     }
-    NotGate.prototype.logic = function () {
-        this.outputs[0].setStatus(!this.inputs[0].status);
+    Input.prototype.logic = function () {
+        this.outputs[0].setStatus(this.state);
     };
-    return NotGate;
+    return Input;
 }(generic_operators_1.GenericOperator));
-exports.NotGate = NotGate;
+exports.Input = Input;
 
 
 /***/ }),
 /* 9 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OrGate = void 0;
-var generic_operators_1 = __webpack_require__(2);
-var OrGate = /** @class */ (function (_super) {
-    __extends(OrGate, _super);
-    function OrGate(pos) {
-        return _super.call(this, pos, 2, 1, 'OR') || this;
-    }
-    OrGate.prototype.logic = function () {
-        this.outputs[0].setStatus(this.inputs[0].status || this.inputs[1].status);
-    };
-    return OrGate;
-}(generic_operators_1.GenericOperator));
-exports.OrGate = OrGate;
-
-
-/***/ }),
-/* 10 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -576,7 +564,75 @@ exports.Output = Output;
 
 
 /***/ }),
+/* 10 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NotGate = void 0;
+var generic_operators_1 = __webpack_require__(2);
+var NotGate = /** @class */ (function (_super) {
+    __extends(NotGate, _super);
+    function NotGate(pos) {
+        return _super.call(this, pos, 1, 1, 'NOT') || this;
+    }
+    NotGate.prototype.logic = function () {
+        this.outputs[0].setStatus(!this.inputs[0].status);
+    };
+    return NotGate;
+}(generic_operators_1.GenericOperator));
+exports.NotGate = NotGate;
+
+
+/***/ }),
 /* 11 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OrGate = void 0;
+var generic_operators_1 = __webpack_require__(2);
+var OrGate = /** @class */ (function (_super) {
+    __extends(OrGate, _super);
+    function OrGate(pos) {
+        return _super.call(this, pos, 2, 1, 'OR') || this;
+    }
+    OrGate.prototype.logic = function () {
+        this.outputs[0].setStatus(this.inputs[0].status || this.inputs[1].status);
+    };
+    return OrGate;
+}(generic_operators_1.GenericOperator));
+exports.OrGate = OrGate;
+
+
+/***/ }),
+/* 12 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -667,16 +723,19 @@ var __webpack_exports__ = {};
 var exports = __webpack_exports__;
 
 /// <reference path="../node_modules/@types/p5/global.d.ts"/>
+var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 var and_gate_1 = __webpack_require__(1);
 var button_1 = __webpack_require__(5);
 var clock_1 = __webpack_require__(6);
-var input_1 = __webpack_require__(7);
-var not_gate_1 = __webpack_require__(8);
-var or_gate_1 = __webpack_require__(9);
-var output_1 = __webpack_require__(10);
-var pulse_button_1 = __webpack_require__(11);
+var combined_operators_1 = __webpack_require__(7);
+var input_1 = __webpack_require__(8);
+var not_gate_1 = __webpack_require__(10);
+var or_gate_1 = __webpack_require__(11);
+var output_1 = __webpack_require__(9);
+var pulse_button_1 = __webpack_require__(12);
 var operators = [];
+var savedCombinedOperator = {};
 window.setup = function () {
     createCanvas(windowWidth, windowHeight);
 };
@@ -727,6 +786,33 @@ function createOperator(tool) {
     if (newOperator)
         operators.push(newOperator);
 }
+// Listen for when the 'Create Operator' is pressed
+// Then combine all the current operators into one
+(_a = document.getElementById('new-operator')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', function () {
+    var _a;
+    // Ask the user what it should be called
+    var name = prompt('What will you call this new operator');
+    if (!name)
+        return alert('You can\'t create an operator without a name');
+    // Copy all the current operators to the savedCombinedOperator object Under the user given name
+    // Very important that we don't just write `savedCombinedOperator[name] = operator`, because then we only copy the reference
+    // And then when we erase all the current operators, it will also erase all the saved onces
+    savedCombinedOperator[name] = [];
+    operators.forEach(function (op) { return savedCombinedOperator[name].push(op); });
+    // Then erase the current operators
+    operators.length = 0;
+    // Create the tool button in the UI
+    var toolButton = document.createElement('li');
+    toolButton.draggable = true;
+    toolButton.innerText = name;
+    // Insert the button before the spacer
+    (_a = document.getElementById('insert-before-here')) === null || _a === void 0 ? void 0 : _a.insertAdjacentElement('beforebegin', toolButton);
+    // Setup ondragend handler
+    toolButton.addEventListener('dragend', function () {
+        var newOperator = new combined_operators_1.CombinedOperators(createVector(mouseX, mouseY), savedCombinedOperator[name], name);
+        operators.push(newOperator);
+    });
+});
 // Loop over all operators and find the first one that is clicked
 // Then drag it to the mouse position
 var draggingItem;

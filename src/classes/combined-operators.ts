@@ -6,6 +6,7 @@ import { Output } from "./output";
 export class CombinedOperators extends GenericOperator {
   inputOperators: Input[];
   outputOperators: Output[];
+  childOperators: GenericOperator[];
 
   constructor(pos: Vector, operators: GenericOperator[], name: string) {
     // Extract the inputs and outputs from all the operators
@@ -20,11 +21,18 @@ export class CombinedOperators extends GenericOperator {
 
     this.inputOperators = inputOperators;
     this.outputOperators = outputOperators;
+    this.childOperators = operators;
   }
 
   logic(): void {
     // Loop over every input node, and set every internal input operator to the state
     this.inputs.forEach((inp, idx) => this.inputOperators[idx].state = inp.status);
+
+    // Loop over all the operators and run their logic
+    this.childOperators.forEach(op => {
+      op.logic();
+      
+    });
 
     // Loop over every output node, and set it's state the match the internal output opetators state
     this.outputs.forEach((out, idx) => out.setStatus(this.outputOperators[idx].state));

@@ -3,14 +3,17 @@
 import { AndGate } from "./classes/and-gate";
 import { Button } from "./classes/button";
 import { Clock } from "./classes/clock";
+import { CombinedOperators } from "./classes/combined-operators";
 import { GenericOperator } from "./classes/generic-operators";
 import { Input } from "./classes/input";
+import { SavedCombinedOperator } from "./classes/interfaces";
 import { NotGate } from "./classes/not-gate";
 import { OrGate } from "./classes/or-gate";
 import { Output } from "./classes/output";
 import { PulseButton } from "./classes/pulse-button";
 
 const operators: GenericOperator[] = [];
+const savedCombinedOperator: SavedCombinedOperator = {};
 
 (window as any).setup = () => {
 	createCanvas(windowWidth, windowHeight);
@@ -39,7 +42,7 @@ type Tools = "button" | "pulse" | "clock" | "output" | "input" | "andGate" | "or
 function createOperator(tool: Tools): void {
 	let newOperator: GenericOperator | undefined;
 
-	switch(tool) {
+	switch (tool) {
 		case 'andGate':
 			newOperator = new AndGate(createVector(mouseX, mouseY));
 			break;
@@ -66,11 +69,42 @@ function createOperator(tool: Tools): void {
 			break;
 		default:
 			const exhaustiveCheck: never = tool;
-      throw new Error(`Unhandled tool case: ${exhaustiveCheck}`);
+			throw new Error(`Unhandled tool case: ${exhaustiveCheck}`);
 	}
 
-	if(newOperator) operators.push(newOperator);
+	if (newOperator) operators.push(newOperator);
 }
+
+// Listen for when the 'Create Operator' is pressed
+// Then combine all the current operators into one
+document.getElementById('new-operator')?.addEventListener('click', () => {
+	// Ask the user what it should be called
+	const name = prompt('What will you call this new operator');
+	if (!name) return alert('You can\'t create an operator without a name');
+
+	// Copy all the current operators to the savedCombinedOperator object Under the user given name
+	// Very important that we don't just write `savedCombinedOperator[name] = operator`, because then we only copy the reference
+	// And then when we erase all the current operators, it will also erase all the saved onces
+	savedCombinedOperator[name] = [];
+	operators.forEach(op => savedCombinedOperator[name].push(op));
+
+	// Then erase the current operators
+	operators.length = 0;
+
+	// Create the tool button in the UI
+	const toolButton = document.createElement('li');
+	toolButton.draggable = true;
+	toolButton.innerText = name;
+
+	// Insert the button before the spacer
+	document.getElementById('insert-before-here')?.insertAdjacentElement('beforebegin', toolButton);
+
+	// Setup ondragend handler
+	toolButton.addEventListener('dragend', () => {
+		const newOperator = new CombinedOperators(createVector(mouseX, mouseY), savedCombinedOperator[name], name);
+		operators.push(newOperator);
+	});
+});
 
 // Loop over all operators and find the first one that is clicked
 // Then drag it to the mouse position
@@ -78,7 +112,7 @@ let draggingItem: GenericOperator | undefined;
 
 (window as any).mousePressed = () => {
 	const clicked = operators.find(cur => cur.mouseOver());
-	if(clicked) {
+	if (clicked) {
 		clicked.dragStart();
 		draggingItem = clicked;
 		return;
@@ -87,7 +121,7 @@ let draggingItem: GenericOperator | undefined;
 
 (window as any).mouseDragged = () => {
 	// If there's an item being dragged, then call the drag() method on them
-	if(draggingItem) {
+	if (draggingItem) {
 		draggingItem.drag();
 	}
 };
