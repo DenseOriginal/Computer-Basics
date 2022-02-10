@@ -2,6 +2,8 @@ import { Vector } from "p5";
 import { GenericOperator } from "./generic-operators";
 
 export class Output extends GenericOperator {
+  public state: boolean = false;
+
   constructor(pos: Vector) {
     super(pos, 1, 0);
   }
@@ -21,5 +23,7 @@ export class Output extends GenericOperator {
     pop();
   }
 
-  logic(): void { }
+  logic(): void {
+    this.state = this.inputs[0].status;
+  }
 }
