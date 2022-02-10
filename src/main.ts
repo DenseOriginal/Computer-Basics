@@ -60,6 +60,9 @@ function createOperator(tool: Tools): void {
 		case 'orGate':
 			newOperator = new OrGate(createVector(mouseX, mouseY));
 			break;
+		default:
+			const exhaustiveCheck: never = tool;
+      throw new Error(`Unhandled tool case: ${exhaustiveCheck}`);
 	}
 
 	if(newOperator) operators.push(newOperator);
