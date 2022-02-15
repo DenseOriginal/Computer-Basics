@@ -1,6 +1,6 @@
 # Pseudocode
 
-## GenericOperator constructor
+## GenericOperator constructor (Micro)
 
 ```txt
 The constructor takes in 4 parameters: position, inputs, outputs & (label or width)
@@ -21,7 +21,7 @@ The constructor takes in 4 parameters: position, inputs, outputs & (label or wid
   END
 ```
 
-## New operator event listener
+## New operator event listener (Micro)
 
 ```txt
 This event listener fires when the button 'New Operator' is clicked in the UI
