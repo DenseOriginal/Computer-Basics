@@ -41,3 +41,33 @@ This event listener fires when the button 'New Operator' is clicked in the UI
 
   END
 ```
+
+## Flow through operators (Macro)
+
+```text
+Operators aren't connected directly to other operators.
+Instead operators have nodes, which are connected with wires.
+
+Wires can only connect to 1 inputNode & 1 outputNode
+InputNodes can only have 1 wire (one to one releation: 1 Node <--> 1 Wire)
+OuputNodes can have many wires (one to many releation: 1 Node <--> Many Wires)
+
+InputNodes can only read status from wires
+OutputNodes can only set status on wires
+
+Example of an AND-gate's logic method that is being called every frame
+  GET status from inputNode[1]
+  GET status from inputNode[2]
+
+  IF inputNode[1] AND inputNode[2] THEN
+    SET outputNode[1] to true
+  ELSE
+    SET outputNode[1] to false
+  
+  END
+
+In this example the logic method starts out by telling both inputNodes to read data from their respective wires
+Then it simply checks if both wires are true
+And if they are the code tells the outputNode to set all of it's wires to true
+If the check returns false then the code tells the outputNode to set all of it's wires to false
+```
