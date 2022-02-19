@@ -2,6 +2,18 @@ import { Vector } from "p5";
 import { Drawable } from "./interfaces";
 import { InputNode, OutputNode } from "./node";
 
+// Generic class for creating operators
+// This parent class has functionality for creating the input/output nodes
+// Aswell as other important features that is required in every operator such as:
+//   Drawing itself and nodes
+//   Checking if the mouse is hovering over
+//   Draggin and dropping
+//   Destorying this operator
+// 
+// This class is an abstract class, meaning that you cannot create an instance of this class
+// You can only extend this class, this is because every operator needs to have different logic
+// Every child operator can also implement it's own draw method by overriding the customDraw() method
+// By default the customDraw() method just draws the label, if the operator has one.
 export abstract class GenericOperator implements Drawable {
   public inputs: InputNode[] = [];
   public outputs: OutputNode[] = [];
@@ -114,5 +126,6 @@ export abstract class GenericOperator implements Drawable {
     this.outputs.forEach(cur => cur.destroy());
   }
 
+  // Every child class needs to write it's own logic method
   abstract logic(): void;
 }
