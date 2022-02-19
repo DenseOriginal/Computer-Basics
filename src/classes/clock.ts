@@ -1,7 +1,5 @@
 import { Vector } from "p5";
 import { GenericOperator } from "./generic-operators";
-import { Drawable } from "./interfaces";
-import { OutputNode } from "./node";
 import { Wire } from "./wire";
 
 const size = 50;
