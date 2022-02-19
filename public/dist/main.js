@@ -192,6 +192,12 @@ function selectNode(node) {
         }
     }
 }
+// Generic class for the two types of nodes
+// The main difference between the input & ouput nodes, are that
+// Input nodes only have one wire, and output nodes can have multiple wire
+// This means that the methods should reflect this difference
+// The class is abstract because even though the implmentation is going to be different
+// The method names should remain the same
 var GenericNode = /** @class */ (function () {
     function GenericNode(relativePos, parentPos) {
         var _this = this;
@@ -311,6 +317,8 @@ exports.OutputNode = OutputNode;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Wire = void 0;
+// Wire class that describes a connection between an input- and output-node
+// A wire can only be connected to 1 input and 1 output
 var Wire = /** @class */ (function () {
     function Wire() {
         this.status = false;

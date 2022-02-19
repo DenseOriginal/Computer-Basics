@@ -29,6 +29,12 @@ function selectNode(node: InputNode | OutputNode): void {
   }
 }
 
+// Generic class for the two types of nodes
+// The main difference between the input & ouput nodes, are that
+// Input nodes only have one wire, and output nodes can have multiple wire
+// This means that the methods should reflect this difference
+// The class is abstract because even though the implmentation is going to be different
+// The method names should remain the same
 abstract class GenericNode implements Drawable {
   readonly id = Math.random().toString();
   get pos(): Vector { return this.parentPos.copy().add(this.relativePos); }

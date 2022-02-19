@@ -3,6 +3,8 @@ import { OutputNode, InputNode } from "./node";
 
 export type Status = boolean;
 
+// Wire class that describes a connection between an input- and output-node
+// A wire can only be connected to 1 input and 1 output
 export class Wire implements Drawable {
   public status: Status = false;
   public readonly id: string = Math.random().toString(36).substr(2, 9);
