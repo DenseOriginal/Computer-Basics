@@ -19,7 +19,7 @@ export class Clock extends GenericOperator {
     super(pos, 0, 1);
   }
 
-  customDraw(): void {
+  override customDraw(): void {
     push();
 
     const deltaTime = millis() - this.lastTrigger;

@@ -8,7 +8,7 @@ export class Output extends GenericOperator {
     super(pos, 1, 0);
   }
 
-  customDraw() {
+  override customDraw() {
     push();
 
     rectMode(CENTER);

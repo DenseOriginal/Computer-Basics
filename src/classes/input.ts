@@ -13,7 +13,7 @@ export class Input extends GenericOperator {
     document.addEventListener('click', () => this.mouseClicked())
   }
 
-  customDraw() {
+  override customDraw() {
     push();
 
     rectMode(CENTER);

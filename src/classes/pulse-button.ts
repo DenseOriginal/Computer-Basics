@@ -6,13 +6,13 @@ const pulse = 30;
 
 export class PulseButton extends GenericOperator {
   constructor(
-    public pos: Vector
+    pos: Vector
   ) {
     super(pos, 0, 1);
     document.addEventListener('mousedown', () => this.mouseClicked())
   }
 
-  customDraw(): void {
+  override customDraw(): void {
     push();
 
     noStroke();

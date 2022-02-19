@@ -91,7 +91,7 @@ export class InputNode extends GenericNode {
     pop();
   }
 
-  protected clickHandler(): void {
+  protected override clickHandler(): void {
     // Shift click to delete the node
     if(!selectedOutputNode && this.wire && keyCode == SHIFT) {
       this.wire.destroy();
