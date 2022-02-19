@@ -14,6 +14,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -43,6 +45,18 @@ exports.AndGate = AndGate;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GenericOperator = void 0;
 var node_1 = __webpack_require__(3);
+// Generic class for creating operators
+// This parent class has functionality for creating the input/output nodes
+// Aswell as other important features that is required in every operator such as:
+//   Drawing itself and nodes
+//   Checking if the mouse is hovering over
+//   Draggin and dropping
+//   Destorying this operator
+// 
+// This class is an abstract class, meaning that you cannot create an instance of this class
+// You can only extend this class, this is because every operator needs to have different logic
+// Every child operator can also implement it's own draw method by overriding the customDraw() method
+// By default the customDraw() method just draws the label, if the operator has one.
 var GenericOperator = /** @class */ (function () {
     function GenericOperator(pos, inputsN, outputsN, labelOrWidth) {
         if (labelOrWidth === void 0) { labelOrWidth = 50; }
@@ -141,6 +155,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -340,6 +356,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -395,6 +413,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -453,6 +473,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -509,6 +531,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -556,6 +580,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -590,6 +616,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -624,6 +652,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -638,7 +668,6 @@ var PulseButton = /** @class */ (function (_super) {
     __extends(PulseButton, _super);
     function PulseButton(pos) {
         var _this = _super.call(this, pos, 0, 1) || this;
-        _this.pos = pos;
         document.addEventListener('mousedown', function () { return _this.mouseClicked(); });
         return _this;
     }
@@ -757,7 +786,7 @@ function createOperator(tool) {
             break;
         default:
             var exhaustiveCheck = tool;
-            throw new Error("Unhandled tool case: " + exhaustiveCheck);
+            throw new Error("Unhandled tool case: ".concat(exhaustiveCheck));
     }
     if (newOperator)
         operators.push(newOperator);
