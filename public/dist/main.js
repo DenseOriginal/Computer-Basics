@@ -52,7 +52,7 @@ var node_1 = __webpack_require__(3);
 //   Checking if the mouse is hovering over
 //   Draggin and dropping
 //   Destorying this operator
-// 
+//
 // This class is an abstract class, meaning that you cannot create an instance of this class
 // You can only extend this class, this is because every operator needs to have different logic
 // Every child operator can also implement it's own draw method by overriding the customDraw() method
@@ -75,11 +75,11 @@ var GenericOperator = /** @class */ (function () {
         this.height = Math.max(most * 25, 50);
         // Generate input nodes and space evenly on the left side
         for (var i = 0; i < inputsN; i++) {
-            this.inputs.push(new node_1.InputNode(createVector(-this.width / 1.7, (-this.height / 2 + (i * this.height / inputsN)) + this.height / inputsN / 2), pos));
+            this.inputs.push(new node_1.InputNode(createVector(-this.width / 1.7, ((-this.height / 2) + (i * this.height / inputsN)) + (this.height / inputsN / 2)), pos));
         }
         // Generate output nodes and space evenly on the right side
         for (var i = 0; i < outputsN; i++) {
-            this.outputs.push(new node_1.OutputNode(createVector(this.width / 1.7, (-this.height / 2 + (i * this.height / outputsN)) + this.height / outputsN / 2), pos));
+            this.outputs.push(new node_1.OutputNode(createVector(this.width / 1.7, ((-this.height / 2) + (i * this.height / outputsN)) + (this.height / outputsN / 2)), pos));
         }
     }
     GenericOperator.prototype.draw = function () {
@@ -114,10 +114,10 @@ var GenericOperator = /** @class */ (function () {
         }
     };
     GenericOperator.prototype.mouseOver = function () {
-        return mouseX > this.pos.x - this.width / 2 &&
-            mouseX < this.pos.x + this.width / 2 &&
-            mouseY > this.pos.y - this.height / 2 &&
-            mouseY < this.pos.y + this.height / 2;
+        return mouseX > this.pos.x - (this.width / 2)
+            && mouseX < this.pos.x + (this.width / 2)
+            && mouseY > this.pos.y - (this.height / 2)
+            && mouseY < this.pos.y + (this.height / 2);
     };
     GenericOperator.prototype.dragStart = function () {
         this.dragging = true;
@@ -213,7 +213,7 @@ var GenericNode = /** @class */ (function () {
     });
     GenericNode.prototype.clickHandler = function () { }; // Empty handler for clicking on the node (only used by output node)
     GenericNode.prototype.mouseClicked = function () {
-        var distSq = Math.pow((this.pos.x - mouseX), 2) + Math.pow((this.pos.y - mouseY), 2);
+        var distSq = (Math.pow((this.pos.x - mouseX), 2)) + (Math.pow((this.pos.y - mouseY), 2));
         var dist = Math.sqrt(distSq);
         if (dist < radius) {
             // If the mouse is over the node
@@ -281,10 +281,10 @@ var OutputNode = /** @class */ (function (_super) {
     };
     OutputNode.prototype.flip = function () {
         // Simply flip all the wires
-        this.wires.forEach(function (wire) { return wire.status = !wire.status; });
+        this.wires.forEach(function (wire) { return (wire.status = !wire.status); });
     };
     OutputNode.prototype.setStatus = function (status) {
-        this.wires.forEach(function (wire) { return wire.status = status; });
+        this.wires.forEach(function (wire) { return (wire.status = status); });
     };
     OutputNode.prototype.draw = function () {
         push();
@@ -397,7 +397,7 @@ var Input = /** @class */ (function (_super) {
         this.outputs[0].setStatus(this.state);
     };
     Input.prototype.mouseClicked = function () {
-        var distSq = Math.pow((this.pos.x - mouseX), 2) + Math.pow((this.pos.y - mouseY), 2);
+        var distSq = (Math.pow((this.pos.x - mouseX), 2)) + (Math.pow((this.pos.y - mouseY), 2));
         var dist = Math.sqrt(distSq);
         if (dist < buttonSize * 0.7 / 2) {
             this.state = !this.state;
@@ -513,7 +513,7 @@ var CombinedOperators = /** @class */ (function (_super) {
     CombinedOperators.prototype.logic = function () {
         var _this = this;
         // Loop over every input node, and set every internal input operator to the state
-        this.inputs.forEach(function (inp, idx) { return _this.inputOperators[idx].state = inp.status; });
+        this.inputs.forEach(function (inp, idx) { return (_this.inputOperators[idx].state = inp.status); });
         // Loop over all the operators and run their logic
         this.childOperators.forEach(function (op) {
             op.logic();
@@ -688,13 +688,13 @@ var PulseButton = /** @class */ (function (_super) {
         textAlign(CENTER, CENTER);
         textSize(buttonSize * 0.3);
         fill('#fff');
-        text('1', this.pos.x + buttonSize * 0.7 / 2, this.pos.y + buttonSize * 0.7 / 2);
+        text('1', this.pos.x + (buttonSize * 0.7 / 2), this.pos.y + (buttonSize * 0.7 / 2));
         pop();
     };
     PulseButton.prototype.logic = function () { };
     PulseButton.prototype.mouseClicked = function () {
         var _this = this;
-        var distSq = Math.pow((this.pos.x - mouseX), 2) + Math.pow((this.pos.y - mouseY), 2);
+        var distSq = (Math.pow((this.pos.x - mouseX), 2)) + (Math.pow((this.pos.y - mouseY), 2));
         var dist = Math.sqrt(distSq);
         if (dist < buttonSize * 0.7 / 2) {
             this.outputs[0].setStatus(true);
@@ -836,7 +836,6 @@ window.mousePressed = function () {
     if (clicked) {
         clicked.dragStart();
         draggingItem = clicked;
-        return;
     }
 };
 window.mouseDragged = function () {

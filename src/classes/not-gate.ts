@@ -1,5 +1,5 @@
-import { Vector } from "p5";
-import { GenericOperator } from "./generic-operators";
+import { Vector } from 'p5';
+import { GenericOperator } from './generic-operators';
 
 export class NotGate extends GenericOperator {
   public constructor(

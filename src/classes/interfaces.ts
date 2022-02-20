@@ -1,4 +1,4 @@
-import { GenericOperator } from "./generic-operators";
+import { GenericOperator } from './generic-operators';
 
 export interface Drawable {
   draw(): void;

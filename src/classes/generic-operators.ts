@@ -1,6 +1,6 @@
-import { Vector } from "p5";
-import { Drawable } from "./interfaces";
-import { InputNode, OutputNode } from "./node";
+import { Vector } from 'p5';
+import { Drawable } from './interfaces';
+import { InputNode, OutputNode } from './node';
 
 // Generic class for creating operators
 // This parent class has functionality for creating the input/output nodes
@@ -9,7 +9,7 @@ import { InputNode, OutputNode } from "./node";
 //   Checking if the mouse is hovering over
 //   Draggin and dropping
 //   Destorying this operator
-// 
+//
 // This class is an abstract class, meaning that you cannot create an instance of this class
 // You can only extend this class, this is because every operator needs to have different logic
 // Every child operator can also implement it's own draw method by overriding the customDraw() method
@@ -44,7 +44,7 @@ export abstract class GenericOperator implements Drawable {
     for (let i = 0; i < inputsN; i++) {
       this.inputs.push(new InputNode(createVector(
         -this.width / 1.7,
-        (-this.height / 2 + (i * this.height / inputsN)) + this.height / inputsN / 2,
+        ((-this.height / 2) + (i * this.height / inputsN)) + (this.height / inputsN / 2),
       ), pos));
     }
 
@@ -52,7 +52,7 @@ export abstract class GenericOperator implements Drawable {
     for (let i = 0; i < outputsN; i++) {
       this.outputs.push(new OutputNode(createVector(
         this.width / 1.7,
-        (-this.height / 2 + (i * this.height / outputsN)) + this.height / outputsN / 2
+        ((-this.height / 2) + (i * this.height / outputsN)) + (this.height / outputsN / 2),
       ), pos));
     }
   }
@@ -83,14 +83,14 @@ export abstract class GenericOperator implements Drawable {
     this.logic();
 
     // Draw all the nodes attached to this operator
-    this.inputs.forEach(input => input.draw());
-    this.outputs.forEach(output => output.draw());
+    this.inputs.forEach((input) => input.draw());
+    this.outputs.forEach((output) => output.draw());
   }
 
   protected customDraw(): void {
     // This method just draws the label of the operator by default
     // Child classes can overwrite this method and implement their own draw
-    if(this.label) {
+    if (this.label) {
       fill('#fff');
       textSize(14);
       text(this.label, this.pos.x, this.pos.y);
@@ -98,10 +98,10 @@ export abstract class GenericOperator implements Drawable {
   }
 
   public mouseOver(): boolean {
-    return mouseX > this.pos.x - this.width / 2 &&
-      mouseX < this.pos.x + this.width / 2 &&
-      mouseY > this.pos.y - this.height / 2 &&
-      mouseY < this.pos.y + this.height / 2;
+    return mouseX > this.pos.x - (this.width / 2)
+      && mouseX < this.pos.x + (this.width / 2)
+      && mouseY > this.pos.y - (this.height / 2)
+      && mouseY < this.pos.y + (this.height / 2);
   }
 
   public dragStart(): void {
@@ -122,8 +122,8 @@ export abstract class GenericOperator implements Drawable {
   public destroy(): void {
     // This method will tell all nodes to destroy all wires
     // So that no other operators are connected to this
-    this.inputs.forEach(cur => cur.destroy());
-    this.outputs.forEach(cur => cur.destroy());
+    this.inputs.forEach((cur) => cur.destroy());
+    this.outputs.forEach((cur) => cur.destroy());
   }
 
   // Every child class needs to write it's own logic method

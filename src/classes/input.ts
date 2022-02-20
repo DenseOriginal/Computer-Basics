@@ -1,5 +1,5 @@
-import { Vector } from "p5";
-import { GenericOperator } from "./generic-operators";
+import { Vector } from 'p5';
+import { GenericOperator } from './generic-operators';
 
 const buttonSize = 50;
 
@@ -10,7 +10,7 @@ export class Input extends GenericOperator {
     pos: Vector,
   ) {
     super(pos, 0, 1, buttonSize);
-    document.addEventListener('click', () => this.mouseClicked())
+    document.addEventListener('click', () => this.mouseClicked());
   }
 
   override customDraw() {
@@ -33,10 +33,10 @@ export class Input extends GenericOperator {
   }
 
   private mouseClicked(): void {
-    const distSq = (this.pos.x - mouseX) ** 2 + (this.pos.y - mouseY) ** 2;
+    const distSq = ((this.pos.x - mouseX) ** 2) + ((this.pos.y - mouseY) ** 2);
     const dist = Math.sqrt(distSq);
 
-    if(dist < buttonSize * 0.7 / 2) {
+    if (dist < buttonSize * 0.7 / 2) {
       this.state = !this.state;
     }
   }

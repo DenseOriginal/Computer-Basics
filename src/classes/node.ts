@@ -1,31 +1,28 @@
-import { Vector } from "p5";
-import { Drawable } from "./interfaces";
-import { Status, Wire } from "./wire";
+import { Vector } from 'p5';
+import { Drawable } from './interfaces';
+import { Status, Wire } from './wire';
 
 const radius = 15;
 
 // This is stuff for creating a new wire between to nodes
 let selectedOutputNode: OutputNode | undefined;
 function selectNode(node: InputNode | OutputNode): void {
-  if(node instanceof OutputNode) {
-    
+  if (node instanceof OutputNode) {
     // If the clicked node is an output
     // And we haven't selected an outputNode already
     // Then set selectedOutputNode to the node that was clicked on
-    if(!selectedOutputNode) { selectedOutputNode = node; return; }
+    if (!selectedOutputNode) { selectedOutputNode = node; return; }
 
     // If the clicked node is the same node, that was already pressed
     // Then just cancel the selection
-    if(selectedOutputNode.id == node.id) { selectedOutputNode = undefined; }
+    if (selectedOutputNode.id == node.id) { selectedOutputNode = undefined; }
   } else {
-
     // If we have already selected an outputNode
     // And we have clicked an input node, then connect the two nodes with a wire
-    if(selectedOutputNode) {
+    if (selectedOutputNode) {
       new Wire().connect(node, selectedOutputNode);
       selectedOutputNode = undefined;
     }
-
   }
 }
 
@@ -55,10 +52,10 @@ abstract class GenericNode implements Drawable {
   abstract draw(): void;
   protected clickHandler(): void {} // Empty handler for clicking on the node (only used by output node)
   private mouseClicked() {
-    const distSq = (this.pos.x - mouseX) ** 2 + (this.pos.y - mouseY) ** 2;
+    const distSq = ((this.pos.x - mouseX) ** 2) + ((this.pos.y - mouseY) ** 2);
     const dist = Math.sqrt(distSq);
 
-    if(dist < radius) {
+    if (dist < radius) {
       // If the mouse is over the node
       // Then call the clickHandler on this node
       // And call the selectNode function
@@ -82,7 +79,7 @@ export class InputNode extends GenericNode {
   }
 
   public removeWire(wire: Wire): void {
-    if(this.wire?.id == wire.id) {
+    if (this.wire?.id == wire.id) {
       this.wire = undefined;
     }
   }
@@ -99,7 +96,7 @@ export class InputNode extends GenericNode {
 
   protected override clickHandler(): void {
     // Shift click to delete the node
-    if(!selectedOutputNode && this.wire && keyCode == SHIFT) {
+    if (!selectedOutputNode && this.wire && keyCode == SHIFT) {
       this.wire.destroy();
     }
   }
@@ -119,16 +116,16 @@ export class OutputNode extends GenericNode {
   public removeWire(wire: Wire): void {
     // When removing a wire, look through the wires array
     // And filter out the one with a matching id
-    this.wires = this.wires.filter(w => w.id != wire.id);
+    this.wires = this.wires.filter((w) => w.id != wire.id);
   }
 
   public flip(): void {
     // Simply flip all the wires
-    this.wires.forEach(wire => wire.status = !wire.status);
+    this.wires.forEach((wire) => (wire.status = !wire.status));
   }
 
   public setStatus(status: Status): void {
-    this.wires.forEach(wire => wire.status = status);
+    this.wires.forEach((wire) => (wire.status = status));
   }
 
   public draw(): void {
@@ -136,14 +133,14 @@ export class OutputNode extends GenericNode {
 
     noStroke();
     // Call the draw method on all it's wires
-    this.wires.forEach(wire => wire.draw());
+    this.wires.forEach((wire) => wire.draw());
 
     fill(selectedOutputNode?.id == this.id ? '#395699' : '#677087');
     circle(this.pos.x, this.pos.y, radius);
 
     // If this node is clicked, then highlight it with a different color
     // And draw a line from the node to the mouse
-    if(selectedOutputNode?.id == this.id) {
+    if (selectedOutputNode?.id == this.id) {
       strokeWeight(4);
       stroke('#383838');
       line(this.pos.x, this.pos.y, mouseX, mouseY);
@@ -152,6 +149,6 @@ export class OutputNode extends GenericNode {
   }
 
   public destroy(): void {
-    this.wires.forEach(wire => wire.destroy());
+    this.wires.forEach((wire) => wire.destroy());
   }
 }

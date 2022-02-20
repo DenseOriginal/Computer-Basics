@@ -1,5 +1,5 @@
-import { Drawable } from "./interfaces";
-import { OutputNode, InputNode } from "./node";
+import { Drawable } from './interfaces';
+import { OutputNode, InputNode } from './node';
 
 export type Status = boolean;
 
@@ -17,13 +17,13 @@ export class Wire implements Drawable {
 
     strokeWeight(4);
     stroke(this.status ? '#f55151' : '#383838');
-    
-    if(this.input && this.output) {
+
+    if (this.input && this.output) {
       line(
         this.output.pos.x,
         this.output.pos.y,
         this.input.pos.x,
-        this.input.pos.y
+        this.input.pos.y,
       );
     }
 
