@@ -1,5 +1,6 @@
 import { Vector } from 'p5';
-import { Drawable } from './interfaces';
+import { getRandID } from '../helpers';
+import { Drawable, HasID } from './interfaces';
 import { InputNode, OutputNode } from './node';
 
 // Generic class for creating operators
@@ -14,7 +15,7 @@ import { InputNode, OutputNode } from './node';
 // You can only extend this class, this is because every operator needs to have different logic
 // Every child operator can also implement it's own draw method by overriding the customDraw() method
 // By default the customDraw() method just draws the label, if the operator has one.
-export abstract class GenericOperator implements Drawable {
+export abstract class GenericOperator implements Drawable, HasID {
   public inputs: InputNode[] = [];
   public outputs: OutputNode[] = [];
   public width: number;
@@ -24,6 +25,8 @@ export abstract class GenericOperator implements Drawable {
   private dragging: boolean = false;
 
   public pos: Vector = createVector();
+
+  readonly id = getRandID();
 
   constructor(
     inputsN: number,

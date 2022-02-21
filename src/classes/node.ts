@@ -1,5 +1,6 @@
 import { Vector } from 'p5';
-import { Drawable } from './interfaces';
+import { getRandID } from '../helpers';
+import { Drawable, HasID } from './interfaces';
 import { Status, Wire } from './wire';
 
 const radius = 15;
@@ -32,8 +33,8 @@ function selectNode(node: InputNode | OutputNode): void {
 // This means that the methods should reflect this difference
 // The class is abstract because even though the implmentation is going to be different
 // The method names should remain the same
-abstract class GenericNode implements Drawable {
-  readonly id = Math.random().toString();
+abstract class GenericNode implements Drawable, HasID {
+  readonly id = getRandID();
   get pos(): Vector { return this.parentPos.copy().add(this.relativePos); }
 
   constructor(

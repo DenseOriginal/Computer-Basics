@@ -44,6 +44,7 @@ exports.AndGate = AndGate;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GenericOperator = void 0;
+var helpers_1 = __webpack_require__(12);
 var node_1 = __webpack_require__(3);
 // Generic class for creating operators
 // This parent class has functionality for creating the input/output nodes
@@ -64,6 +65,7 @@ var GenericOperator = /** @class */ (function () {
         this.outputs = [];
         this.dragging = false;
         this.pos = createVector();
+        this.id = (0, helpers_1.getRandID)();
         // Calculate the width and label
         // Depending on what type labelOrWidth is
         this.width = typeof labelOrWidth === 'string' ? textWidth(labelOrWidth) + 40 : labelOrWidth;
@@ -164,6 +166,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.OutputNode = exports.InputNode = void 0;
+var helpers_1 = __webpack_require__(12);
 var wire_1 = __webpack_require__(4);
 var radius = 15;
 // This is stuff for creating a new wire between to nodes
@@ -203,7 +206,7 @@ var GenericNode = /** @class */ (function () {
         var _this = this;
         this.relativePos = relativePos;
         this.parentPos = parentPos;
-        this.id = Math.random().toString();
+        this.id = (0, helpers_1.getRandID)();
         document.addEventListener('click', function () { return _this.mouseClicked(); });
     }
     Object.defineProperty(GenericNode.prototype, "pos", {
@@ -312,17 +315,18 @@ exports.OutputNode = OutputNode;
 
 /***/ }),
 /* 4 */
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Wire = void 0;
+var helpers_1 = __webpack_require__(12);
 // Wire class that describes a connection between an input- and output-node
 // A wire can only be connected to 1 input and 1 output
 var Wire = /** @class */ (function () {
     function Wire() {
         this.status = false;
-        this.id = Math.random().toString(36).substr(2, 9);
+        this.id = (0, helpers_1.getRandID)();
     }
     Wire.prototype.draw = function () {
         push();
@@ -704,6 +708,26 @@ var PulseButton = /** @class */ (function (_super) {
     return PulseButton;
 }(generic_operators_1.GenericOperator));
 exports.PulseButton = PulseButton;
+
+
+/***/ }),
+/* 12 */
+/***/ (function(__unused_webpack_module, exports) {
+
+
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getRandID = void 0;
+var getRandID = function () { return __spreadArray([], Array(6), true).map(function () { return Math.floor(Math.random() * 16).toString(16); }).join(''); };
+exports.getRandID = getRandID;
 
 
 /***/ })

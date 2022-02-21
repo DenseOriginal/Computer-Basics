@@ -1,13 +1,14 @@
-import { Drawable } from './interfaces';
+import { getRandID } from '../helpers';
+import { Drawable, HasID } from './interfaces';
 import { OutputNode, InputNode } from './node';
 
 export type Status = boolean;
 
 // Wire class that describes a connection between an input- and output-node
 // A wire can only be connected to 1 input and 1 output
-export class Wire implements Drawable {
+export class Wire implements Drawable, HasID {
   public status: Status = false;
-  public readonly id: string = Math.random().toString(36).substr(2, 9);
+  readonly id = getRandID();
 
   public output: OutputNode | undefined;
   public input: InputNode | undefined;
