@@ -1,3 +1,4 @@
+import { registerOperator } from '../helpers';
 import { GenericOperator } from './generic-operators';
 import { Wire } from './wire';
 
@@ -35,3 +36,5 @@ export class Clock extends GenericOperator {
 
   logic(): void { }
 }
+
+registerOperator(Clock);

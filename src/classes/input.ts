@@ -1,3 +1,4 @@
+import { registerOperator } from '../helpers';
 import { GenericOperator } from './generic-operators';
 
 const buttonSize = 50;
@@ -38,3 +39,5 @@ export class Input extends GenericOperator {
     }
   }
 }
+
+registerOperator(Input);

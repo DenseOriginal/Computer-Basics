@@ -23,7 +23,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AndGate = void 0;
-var generic_operators_1 = __webpack_require__(2);
+var helpers_1 = __webpack_require__(2);
+var generic_operators_1 = __webpack_require__(3);
 var AndGate = /** @class */ (function (_super) {
     __extends(AndGate, _super);
     function AndGate() {
@@ -35,17 +36,51 @@ var AndGate = /** @class */ (function (_super) {
     return AndGate;
 }(generic_operators_1.GenericOperator));
 exports.AndGate = AndGate;
+(0, helpers_1.registerOperator)(AndGate);
 
 
 /***/ }),
 /* 2 */
+/***/ (function(__unused_webpack_module, exports) {
+
+
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getOperator = exports.registerOperator = exports.getRandID = void 0;
+var getRandID = function () { return __spreadArray([], Array(6), true).map(function () { return Math.floor(Math.random() * 16).toString(16); }).join(''); };
+exports.getRandID = getRandID;
+var operatorMap = new Map();
+function registerOperator(constructor) {
+    var name = constructor.name;
+    operatorMap.set(name, constructor);
+}
+exports.registerOperator = registerOperator;
+function getOperator(name) {
+    return operatorMap.get(name);
+}
+exports.getOperator = getOperator;
+setTimeout(function () {
+    console.log(operatorMap);
+}, 500);
+
+
+/***/ }),
+/* 3 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GenericOperator = void 0;
-var helpers_1 = __webpack_require__(12);
-var node_1 = __webpack_require__(3);
+var helpers_1 = __webpack_require__(2);
+var node_1 = __webpack_require__(4);
 // Generic class for creating operators
 // This parent class has functionality for creating the input/output nodes
 // Aswell as other important features that is required in every operator such as:
@@ -145,7 +180,7 @@ exports.GenericOperator = GenericOperator;
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -166,8 +201,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.OutputNode = exports.InputNode = void 0;
-var helpers_1 = __webpack_require__(12);
-var wire_1 = __webpack_require__(4);
+var helpers_1 = __webpack_require__(2);
+var wire_1 = __webpack_require__(5);
 var radius = 15;
 // This is stuff for creating a new wire between to nodes
 var selectedOutputNode;
@@ -314,13 +349,13 @@ exports.OutputNode = OutputNode;
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Wire = void 0;
-var helpers_1 = __webpack_require__(12);
+var helpers_1 = __webpack_require__(2);
 // Wire class that describes a connection between an input- and output-node
 // A wire can only be connected to 1 input and 1 output
 var Wire = /** @class */ (function () {
@@ -356,7 +391,7 @@ exports.Wire = Wire;
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -377,7 +412,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Input = void 0;
-var generic_operators_1 = __webpack_require__(2);
+var helpers_1 = __webpack_require__(2);
+var generic_operators_1 = __webpack_require__(3);
 var buttonSize = 50;
 var Input = /** @class */ (function (_super) {
     __extends(Input, _super);
@@ -410,10 +446,11 @@ var Input = /** @class */ (function (_super) {
     return Input;
 }(generic_operators_1.GenericOperator));
 exports.Input = Input;
+(0, helpers_1.registerOperator)(Input);
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -434,8 +471,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Clock = void 0;
-var generic_operators_1 = __webpack_require__(2);
-var wire_1 = __webpack_require__(4);
+var helpers_1 = __webpack_require__(2);
+var generic_operators_1 = __webpack_require__(3);
+var wire_1 = __webpack_require__(5);
 var size = 50;
 var cycle = 1000;
 // This is to prevent the wire being high for 1 frame
@@ -470,10 +508,11 @@ var Clock = /** @class */ (function (_super) {
     return Clock;
 }(generic_operators_1.GenericOperator));
 exports.Clock = Clock;
+(0, helpers_1.registerOperator)(Clock);
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -494,9 +533,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CombinedOperators = void 0;
-var generic_operators_1 = __webpack_require__(2);
-var input_1 = __webpack_require__(5);
-var output_1 = __webpack_require__(8);
+var generic_operators_1 = __webpack_require__(3);
+var input_1 = __webpack_require__(6);
+var output_1 = __webpack_require__(9);
 var CombinedOperators = /** @class */ (function (_super) {
     __extends(CombinedOperators, _super);
     function CombinedOperators(pos, operators, name) {
@@ -531,7 +570,7 @@ exports.CombinedOperators = CombinedOperators;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -552,7 +591,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Output = void 0;
-var generic_operators_1 = __webpack_require__(2);
+var helpers_1 = __webpack_require__(2);
+var generic_operators_1 = __webpack_require__(3);
 var Output = /** @class */ (function (_super) {
     __extends(Output, _super);
     function Output() {
@@ -577,42 +617,7 @@ var Output = /** @class */ (function (_super) {
     return Output;
 }(generic_operators_1.GenericOperator));
 exports.Output = Output;
-
-
-/***/ }),
-/* 9 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NotGate = void 0;
-var generic_operators_1 = __webpack_require__(2);
-var NotGate = /** @class */ (function (_super) {
-    __extends(NotGate, _super);
-    function NotGate() {
-        return _super.call(this, 1, 1, 'NOT') || this;
-    }
-    NotGate.prototype.logic = function () {
-        this.outputs[0].setStatus(!this.inputs[0].status);
-    };
-    return NotGate;
-}(generic_operators_1.GenericOperator));
-exports.NotGate = NotGate;
+(0, helpers_1.registerOperator)(Output);
 
 
 /***/ }),
@@ -636,19 +641,21 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OrGate = void 0;
-var generic_operators_1 = __webpack_require__(2);
-var OrGate = /** @class */ (function (_super) {
-    __extends(OrGate, _super);
-    function OrGate() {
-        return _super.call(this, 2, 1, 'OR') || this;
+exports.NotGate = void 0;
+var helpers_1 = __webpack_require__(2);
+var generic_operators_1 = __webpack_require__(3);
+var NotGate = /** @class */ (function (_super) {
+    __extends(NotGate, _super);
+    function NotGate() {
+        return _super.call(this, 1, 1, 'NOT') || this;
     }
-    OrGate.prototype.logic = function () {
-        this.outputs[0].setStatus(this.inputs[0].status || this.inputs[1].status);
+    NotGate.prototype.logic = function () {
+        this.outputs[0].setStatus(!this.inputs[0].status);
     };
-    return OrGate;
+    return NotGate;
 }(generic_operators_1.GenericOperator));
-exports.OrGate = OrGate;
+exports.NotGate = NotGate;
+(0, helpers_1.registerOperator)(NotGate);
 
 
 /***/ }),
@@ -672,8 +679,47 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OrGate = void 0;
+var helpers_1 = __webpack_require__(2);
+var generic_operators_1 = __webpack_require__(3);
+var OrGate = /** @class */ (function (_super) {
+    __extends(OrGate, _super);
+    function OrGate() {
+        return _super.call(this, 2, 1, 'OR') || this;
+    }
+    OrGate.prototype.logic = function () {
+        this.outputs[0].setStatus(this.inputs[0].status || this.inputs[1].status);
+    };
+    return OrGate;
+}(generic_operators_1.GenericOperator));
+exports.OrGate = OrGate;
+(0, helpers_1.registerOperator)(OrGate);
+
+
+/***/ }),
+/* 12 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PulseButton = void 0;
-var generic_operators_1 = __webpack_require__(2);
+var helpers_1 = __webpack_require__(2);
+var generic_operators_1 = __webpack_require__(3);
 var buttonSize = 50;
 var pulse = 30;
 var PulseButton = /** @class */ (function (_super) {
@@ -708,36 +754,7 @@ var PulseButton = /** @class */ (function (_super) {
     return PulseButton;
 }(generic_operators_1.GenericOperator));
 exports.PulseButton = PulseButton;
-
-
-/***/ }),
-/* 12 */
-/***/ (function(__unused_webpack_module, exports) {
-
-
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOperator = exports.registerOperator = exports.getRandID = void 0;
-var getRandID = function () { return __spreadArray([], Array(6), true).map(function () { return Math.floor(Math.random() * 16).toString(16); }).join(''); };
-exports.getRandID = getRandID;
-var operatorMap = new Map();
-function registerOperator(constructor) {
-    var name = constructor.name;
-    operatorMap.set(name, constructor);
-}
-exports.registerOperator = registerOperator;
-function getOperator(name) {
-    return operatorMap.get(name);
-}
-exports.getOperator = getOperator;
+(0, helpers_1.registerOperator)(PulseButton);
 
 
 /***/ })
@@ -777,13 +794,13 @@ var exports = __webpack_exports__;
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 var and_gate_1 = __webpack_require__(1);
-var input_1 = __webpack_require__(5);
-var clock_1 = __webpack_require__(6);
-var combined_operators_1 = __webpack_require__(7);
-var not_gate_1 = __webpack_require__(9);
-var or_gate_1 = __webpack_require__(10);
-var output_1 = __webpack_require__(8);
-var pulse_button_1 = __webpack_require__(11);
+var input_1 = __webpack_require__(6);
+var clock_1 = __webpack_require__(7);
+var combined_operators_1 = __webpack_require__(8);
+var not_gate_1 = __webpack_require__(10);
+var or_gate_1 = __webpack_require__(11);
+var output_1 = __webpack_require__(9);
+var pulse_button_1 = __webpack_require__(12);
 var operators = [];
 var savedCombinedOperator = {};
 window.setup = function () {

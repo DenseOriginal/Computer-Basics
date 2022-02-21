@@ -1,3 +1,4 @@
+import { registerOperator } from '../helpers';
 import { GenericOperator } from './generic-operators';
 
 export class NotGate extends GenericOperator {
@@ -9,3 +10,5 @@ export class NotGate extends GenericOperator {
     this.outputs[0].setStatus(!this.inputs[0].status);
   }
 }
+
+registerOperator(NotGate);

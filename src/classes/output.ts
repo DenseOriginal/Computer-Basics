@@ -1,3 +1,4 @@
+import { registerOperator } from '../helpers';
 import { GenericOperator } from './generic-operators';
 
 export class Output extends GenericOperator {
@@ -26,3 +27,5 @@ export class Output extends GenericOperator {
     this.state = this.inputs[0].status;
   }
 }
+
+registerOperator(Output);

@@ -1,3 +1,4 @@
+import { registerOperator } from '../helpers';
 import { GenericOperator } from './generic-operators';
 
 const buttonSize = 50;
@@ -37,3 +38,5 @@ export class PulseButton extends GenericOperator {
     }
   }
 }
+
+registerOperator(PulseButton);
