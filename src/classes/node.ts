@@ -1,5 +1,6 @@
 import { Vector } from 'p5';
 import { getRandID } from '../helpers';
+import { GenericOperator } from './generic-operators';
 import { Drawable, HasID } from './interfaces';
 import { Status, Wire } from './wire';
 
@@ -35,11 +36,11 @@ function selectNode(node: InputNode | OutputNode): void {
 // The method names should remain the same
 abstract class GenericNode implements Drawable, HasID {
   readonly id = getRandID();
-  get pos(): Vector { return this.parentPos.copy().add(this.relativePos); }
+  get pos(): Vector { return this.parent.pos.copy().add(this.relativePos); }
 
   constructor(
     private relativePos: Vector,
-    private parentPos: Vector,
+    public readonly parent: GenericOperator,
   ) {
     document.addEventListener('click', () => this.mouseClicked());
   }
