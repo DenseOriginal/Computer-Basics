@@ -26,8 +26,8 @@ exports.AndGate = void 0;
 var generic_operators_1 = __webpack_require__(2);
 var AndGate = /** @class */ (function (_super) {
     __extends(AndGate, _super);
-    function AndGate(pos) {
-        return _super.call(this, pos, 2, 1, 'AND') || this;
+    function AndGate() {
+        return _super.call(this, 2, 1, 'AND') || this;
     }
     AndGate.prototype.logic = function () {
         this.outputs[0].setStatus(this.inputs[0].status && this.inputs[1].status);
@@ -58,12 +58,12 @@ var node_1 = __webpack_require__(3);
 // Every child operator can also implement it's own draw method by overriding the customDraw() method
 // By default the customDraw() method just draws the label, if the operator has one.
 var GenericOperator = /** @class */ (function () {
-    function GenericOperator(pos, inputsN, outputsN, labelOrWidth) {
+    function GenericOperator(inputsN, outputsN, labelOrWidth) {
         if (labelOrWidth === void 0) { labelOrWidth = 50; }
-        this.pos = pos;
         this.inputs = [];
         this.outputs = [];
         this.dragging = false;
+        this.pos = createVector();
         // Calculate the width and label
         // Depending on what type labelOrWidth is
         this.width = typeof labelOrWidth === 'string' ? textWidth(labelOrWidth) + 40 : labelOrWidth;
@@ -75,11 +75,11 @@ var GenericOperator = /** @class */ (function () {
         this.height = Math.max(most * 25, 50);
         // Generate input nodes and space evenly on the left side
         for (var i = 0; i < inputsN; i++) {
-            this.inputs.push(new node_1.InputNode(createVector(-this.width / 1.7, ((-this.height / 2) + (i * this.height / inputsN)) + (this.height / inputsN / 2)), pos));
+            this.inputs.push(new node_1.InputNode(createVector(-this.width / 1.7, ((-this.height / 2) + (i * this.height / inputsN)) + (this.height / inputsN / 2)), this.pos));
         }
         // Generate output nodes and space evenly on the right side
         for (var i = 0; i < outputsN; i++) {
-            this.outputs.push(new node_1.OutputNode(createVector(this.width / 1.7, ((-this.height / 2) + (i * this.height / outputsN)) + (this.height / outputsN / 2)), pos));
+            this.outputs.push(new node_1.OutputNode(createVector(this.width / 1.7, ((-this.height / 2) + (i * this.height / outputsN)) + (this.height / outputsN / 2)), this.pos));
         }
     }
     GenericOperator.prototype.draw = function () {
@@ -377,8 +377,8 @@ var generic_operators_1 = __webpack_require__(2);
 var buttonSize = 50;
 var Input = /** @class */ (function (_super) {
     __extends(Input, _super);
-    function Input(pos) {
-        var _this = _super.call(this, pos, 0, 1, buttonSize) || this;
+    function Input() {
+        var _this = _super.call(this, 0, 1, buttonSize) || this;
         _this.state = false;
         document.addEventListener('click', function () { return _this.mouseClicked(); });
         return _this;
@@ -438,8 +438,8 @@ var cycle = 1000;
 var activationTime = 50;
 var Clock = /** @class */ (function (_super) {
     __extends(Clock, _super);
-    function Clock(pos) {
-        var _this = _super.call(this, pos, 0, 1) || this;
+    function Clock() {
+        var _this = _super.call(this, 0, 1) || this;
         _this.lastTrigger = 0;
         return _this;
     }
@@ -504,7 +504,7 @@ var CombinedOperators = /** @class */ (function (_super) {
         var outputOperators = operators.filter(function (op) { return op instanceof output_1.Output; }).sort(function (a, b) { return b.pos.y - a.pos.y; });
         // Pass the number of inputs and outputs to the GenericOperator
         // So that it can create the appopriate amount of nodes
-        _this = _super.call(this, pos, inputOperators.length, outputOperators.length, name) || this;
+        _this = _super.call(this, inputOperators.length, outputOperators.length, name) || this;
         _this.inputOperators = inputOperators;
         _this.outputOperators = outputOperators;
         _this.childOperators = operators;
@@ -551,8 +551,8 @@ exports.Output = void 0;
 var generic_operators_1 = __webpack_require__(2);
 var Output = /** @class */ (function (_super) {
     __extends(Output, _super);
-    function Output(pos) {
-        var _this = _super.call(this, pos, 1, 0) || this;
+    function Output() {
+        var _this = _super.call(this, 1, 0) || this;
         _this.state = false;
         return _this;
     }
@@ -600,8 +600,8 @@ exports.NotGate = void 0;
 var generic_operators_1 = __webpack_require__(2);
 var NotGate = /** @class */ (function (_super) {
     __extends(NotGate, _super);
-    function NotGate(pos) {
-        return _super.call(this, pos, 1, 1, 'NOT') || this;
+    function NotGate() {
+        return _super.call(this, 1, 1, 'NOT') || this;
     }
     NotGate.prototype.logic = function () {
         this.outputs[0].setStatus(!this.inputs[0].status);
@@ -636,8 +636,8 @@ exports.OrGate = void 0;
 var generic_operators_1 = __webpack_require__(2);
 var OrGate = /** @class */ (function (_super) {
     __extends(OrGate, _super);
-    function OrGate(pos) {
-        return _super.call(this, pos, 2, 1, 'OR') || this;
+    function OrGate() {
+        return _super.call(this, 2, 1, 'OR') || this;
     }
     OrGate.prototype.logic = function () {
         this.outputs[0].setStatus(this.inputs[0].status || this.inputs[1].status);
@@ -674,8 +674,8 @@ var buttonSize = 50;
 var pulse = 30;
 var PulseButton = /** @class */ (function (_super) {
     __extends(PulseButton, _super);
-    function PulseButton(pos) {
-        var _this = _super.call(this, pos, 0, 1) || this;
+    function PulseButton() {
+        var _this = _super.call(this, 0, 1) || this;
         document.addEventListener('mousedown', function () { return _this.mouseClicked(); });
         return _this;
     }
@@ -772,32 +772,32 @@ function createOperator(tool) {
     var newOperator;
     switch (tool) {
         case 'andGate':
-            newOperator = new and_gate_1.AndGate(createVector(mouseX, mouseY));
+            newOperator = new and_gate_1.AndGate();
             break;
         case 'pulse':
-            newOperator = new pulse_button_1.PulseButton(createVector(mouseX, mouseY));
+            newOperator = new pulse_button_1.PulseButton();
             break;
         case 'clock':
-            newOperator = new clock_1.Clock(createVector(mouseX, mouseY));
+            newOperator = new clock_1.Clock();
             break;
         case 'output':
-            newOperator = new output_1.Output(createVector(mouseX, mouseY));
+            newOperator = new output_1.Output();
             break;
         case 'input':
-            newOperator = new input_1.Input(createVector(mouseX, mouseY));
+            newOperator = new input_1.Input();
             break;
         case 'notGate':
-            newOperator = new not_gate_1.NotGate(createVector(mouseX, mouseY));
+            newOperator = new not_gate_1.NotGate();
             break;
         case 'orGate':
-            newOperator = new or_gate_1.OrGate(createVector(mouseX, mouseY));
+            newOperator = new or_gate_1.OrGate();
             break;
         default:
             var exhaustiveCheck = tool;
             throw new Error("Unhandled tool case: ".concat(exhaustiveCheck));
     }
-    if (newOperator)
-        operators.push(newOperator);
+    newOperator.pos.set(createVector(mouseX, mouseY));
+    operators.push(newOperator);
 }
 // Listen for when the 'Create Operator' is pressed
 // Then combine all the current operators into one

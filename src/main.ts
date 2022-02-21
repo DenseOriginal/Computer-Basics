@@ -42,32 +42,34 @@ function createOperator(tool: Tools): void {
 
   switch (tool) {
   case 'andGate':
-    newOperator = new AndGate(createVector(mouseX, mouseY));
+    newOperator = new AndGate();
     break;
   case 'pulse':
-    newOperator = new PulseButton(createVector(mouseX, mouseY));
+    newOperator = new PulseButton();
     break;
   case 'clock':
-    newOperator = new Clock(createVector(mouseX, mouseY));
+    newOperator = new Clock();
     break;
   case 'output':
-    newOperator = new Output(createVector(mouseX, mouseY));
+    newOperator = new Output();
     break;
   case 'input':
-    newOperator = new Input(createVector(mouseX, mouseY));
+    newOperator = new Input();
     break;
   case 'notGate':
-    newOperator = new NotGate(createVector(mouseX, mouseY));
+    newOperator = new NotGate();
     break;
   case 'orGate':
-    newOperator = new OrGate(createVector(mouseX, mouseY));
+    newOperator = new OrGate();
     break;
   default:
     const exhaustiveCheck: never = tool;
     throw new Error(`Unhandled tool case: ${exhaustiveCheck}`);
   }
 
-  if (newOperator) operators.push(newOperator);
+  newOperator.pos.set(createVector(mouseX, mouseY));
+
+  operators.push(newOperator);
 }
 
 // Listen for when the 'Create Operator' is pressed

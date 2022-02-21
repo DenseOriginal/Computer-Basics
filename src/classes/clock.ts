@@ -1,4 +1,3 @@
-import { Vector } from 'p5';
 import { GenericOperator } from './generic-operators';
 import { Wire } from './wire';
 
@@ -11,10 +10,8 @@ const activationTime = 50;
 export class Clock extends GenericOperator {
   private lastTrigger: number = 0;
 
-  constructor(
-    pos: Vector,
-  ) {
-    super(pos, 0, 1);
+  constructor() {
+    super(0, 1);
   }
 
   override customDraw(): void {

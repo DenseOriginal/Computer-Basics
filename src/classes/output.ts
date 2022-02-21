@@ -1,11 +1,10 @@
-import { Vector } from 'p5';
 import { GenericOperator } from './generic-operators';
 
 export class Output extends GenericOperator {
   public state: boolean = false;
 
-  constructor(pos: Vector) {
-    super(pos, 1, 0);
+  constructor() {
+    super(1, 0);
   }
 
   override customDraw() {

@@ -1,9 +1,8 @@
-import { Vector } from 'p5';
 import { GenericOperator } from './generic-operators';
 
 export class OrGate extends GenericOperator {
-  constructor(pos: Vector) {
-    super(pos, 2, 1, 'OR');
+  constructor() {
+    super(2, 1, 'OR');
   }
 
   logic() {

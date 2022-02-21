@@ -1,14 +1,11 @@
-import { Vector } from 'p5';
 import { GenericOperator } from './generic-operators';
 
 const buttonSize = 50;
 const pulse = 30;
 
 export class PulseButton extends GenericOperator {
-  constructor(
-    pos: Vector,
-  ) {
-    super(pos, 0, 1);
+  constructor() {
+    super(0, 1);
     document.addEventListener('mousedown', () => this.mouseClicked());
   }
 

@@ -1,4 +1,3 @@
-import { Vector } from 'p5';
 import { GenericOperator } from './generic-operators';
 
 const buttonSize = 50;
@@ -6,10 +5,8 @@ const buttonSize = 50;
 export class Input extends GenericOperator {
   public state: boolean = false;
 
-  constructor(
-    pos: Vector,
-  ) {
-    super(pos, 0, 1, buttonSize);
+  constructor() {
+    super(0, 1, buttonSize);
     document.addEventListener('click', () => this.mouseClicked());
   }
 

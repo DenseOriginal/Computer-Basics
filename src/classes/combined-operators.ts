@@ -17,7 +17,7 @@ export class CombinedOperators extends GenericOperator {
 
     // Pass the number of inputs and outputs to the GenericOperator
     // So that it can create the appopriate amount of nodes
-    super(pos, inputOperators.length, outputOperators.length, name);
+    super(inputOperators.length, outputOperators.length, name);
 
     this.inputOperators = inputOperators;
     this.outputOperators = outputOperators;
