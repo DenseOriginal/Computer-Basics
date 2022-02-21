@@ -725,9 +725,19 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getRandID = void 0;
+exports.getOperator = exports.registerOperator = exports.getRandID = void 0;
 var getRandID = function () { return __spreadArray([], Array(6), true).map(function () { return Math.floor(Math.random() * 16).toString(16); }).join(''); };
 exports.getRandID = getRandID;
+var operatorMap = new Map();
+function registerOperator(constructor) {
+    var name = constructor.name;
+    operatorMap.set(name, constructor);
+}
+exports.registerOperator = registerOperator;
+function getOperator(name) {
+    return operatorMap.get(name);
+}
+exports.getOperator = getOperator;
 
 
 /***/ })
