@@ -36,6 +36,7 @@ function selectNode(node: InputNode | OutputNode): void {
 // The method names should remain the same
 abstract class GenericNode implements Drawable, HasID {
   readonly id = getRandID();
+  public abstract readonly type: 'input' | 'output';
   get pos(): Vector { return this.parent.pos.copy().add(this.relativePos); }
 
   constructor(
@@ -50,6 +51,15 @@ abstract class GenericNode implements Drawable, HasID {
   // This is because the output node can have multiple wires, and the input can only have 1
   public abstract connectWire(wire: Wire): void
   public abstract removeWire(wire: Wire): void
+
+  public getNodeNumber(): number {
+    // Because the nodes are two different types, and exist in two different arrays
+    // So we need to check what type the calling node is
+    // This check is instead of making this method abstract
+    if (this.type == 'input') return this.parent.inputs.findIndex((node) => node.id == this.id);
+    // If it isn't input, then it's output
+    return this.parent.outputs.findIndex((node) => node.id == this.id);
+  }
 
   abstract draw(): void;
   protected clickHandler(): void {} // Empty handler for clicking on the node (only used by output node)
@@ -73,6 +83,7 @@ abstract class GenericNode implements Drawable, HasID {
 
 export class InputNode extends GenericNode {
   private wire?: Wire;
+  readonly type = 'input';
 
   get status(): Status { return this.wire?.status || Wire.LOW; }
 
@@ -106,10 +117,15 @@ export class InputNode extends GenericNode {
   public destroy(): void {
     this.wire?.destroy();
   }
+
+  public getWireRelation() {
+    return this.wire?.describeRelation();
+  }
 }
 
 export class OutputNode extends GenericNode {
   private wires: Wire[] = [];
+  readonly type = 'output';
 
   public connectWire(wire: Wire): void {
     this.wires.push(wire);

@@ -54,7 +54,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOperator = exports.registerOperator = exports.getRandID = void 0;
+exports.stringifyOperators = exports.getOperator = exports.registerOperator = exports.getRandID = void 0;
 var getRandID = function () { return __spreadArray([], Array(6), true).map(function () { return Math.floor(Math.random() * 16).toString(16); }).join(''); };
 exports.getRandID = getRandID;
 var operatorMap = new Map();
@@ -67,9 +67,35 @@ function getOperator(name) {
     return operatorMap.get(name);
 }
 exports.getOperator = getOperator;
-setTimeout(function () {
-    console.log(operatorMap);
-}, 500);
+function stringifyOperators(operators) {
+    var relations = {
+        operators: [],
+        connections: [],
+    };
+    // Loop over all the operators that we're givin
+    operators.forEach(function (op) {
+        if (op.constructor.name == 'CombinedOperators')
+            throw new Error('Can\'t do CombinedOperators yet...');
+        // Register the current operators
+        relations.operators.push({
+            id: op.id,
+            className: op.constructor.name,
+        });
+        // We only need to loop over every input
+        // Because we can be sure that every wire is between an output and an input
+        // Therefore we only need to check inputs or outputs, not both of them.
+        // If we do check both then we'll encounter wires we have already looked at.
+        op.inputs.forEach(function (node) {
+            // A connection goes from Output -> Input
+            var connection = node.getWireRelation();
+            if (!connection)
+                return; // If the relation is undefined, just skip it
+            relations.connections.push(connection);
+        });
+    });
+    return JSON.stringify(relations);
+}
+exports.stringifyOperators = stringifyOperators;
 
 
 /***/ }),
@@ -112,11 +138,11 @@ var GenericOperator = /** @class */ (function () {
         this.height = Math.max(most * 25, 50);
         // Generate input nodes and space evenly on the left side
         for (var i = 0; i < inputsN; i++) {
-            this.inputs.push(new node_1.InputNode(createVector(-this.width / 1.7, ((-this.height / 2) + (i * this.height / inputsN)) + (this.height / inputsN / 2)), this.pos));
+            this.inputs.push(new node_1.InputNode(createVector(-this.width / 1.7, ((-this.height / 2) + (i * this.height / inputsN)) + (this.height / inputsN / 2)), this));
         }
         // Generate output nodes and space evenly on the right side
         for (var i = 0; i < outputsN; i++) {
-            this.outputs.push(new node_1.OutputNode(createVector(this.width / 1.7, ((-this.height / 2) + (i * this.height / outputsN)) + (this.height / outputsN / 2)), this.pos));
+            this.outputs.push(new node_1.OutputNode(createVector(this.width / 1.7, ((-this.height / 2) + (i * this.height / outputsN)) + (this.height / outputsN / 2)), this));
         }
     }
     GenericOperator.prototype.draw = function () {
@@ -237,18 +263,28 @@ function selectNode(node) {
 // The class is abstract because even though the implmentation is going to be different
 // The method names should remain the same
 var GenericNode = /** @class */ (function () {
-    function GenericNode(relativePos, parentPos) {
+    function GenericNode(relativePos, parent) {
         var _this = this;
         this.relativePos = relativePos;
-        this.parentPos = parentPos;
+        this.parent = parent;
         this.id = (0, helpers_1.getRandID)();
         document.addEventListener('click', function () { return _this.mouseClicked(); });
     }
     Object.defineProperty(GenericNode.prototype, "pos", {
-        get: function () { return this.parentPos.copy().add(this.relativePos); },
+        get: function () { return this.parent.pos.copy().add(this.relativePos); },
         enumerable: false,
         configurable: true
     });
+    GenericNode.prototype.getNodeNumber = function () {
+        var _this = this;
+        // Because the nodes are two different types, and exist in two different arrays
+        // So we need to check what type the calling node is
+        // This check is instead of making this method abstract
+        if (this.type == 'input')
+            return this.parent.inputs.findIndex(function (node) { return node.id == _this.id; });
+        // If it isn't input, then it's output
+        return this.parent.outputs.findIndex(function (node) { return node.id == _this.id; });
+    };
     GenericNode.prototype.clickHandler = function () { }; // Empty handler for clicking on the node (only used by output node)
     GenericNode.prototype.mouseClicked = function () {
         var distSq = (Math.pow((this.pos.x - mouseX), 2)) + (Math.pow((this.pos.y - mouseY), 2));
@@ -266,7 +302,9 @@ var GenericNode = /** @class */ (function () {
 var InputNode = /** @class */ (function (_super) {
     __extends(InputNode, _super);
     function InputNode() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.type = 'input';
+        return _this;
     }
     Object.defineProperty(InputNode.prototype, "status", {
         get: function () { var _a; return ((_a = this.wire) === null || _a === void 0 ? void 0 : _a.status) || wire_1.Wire.LOW; },
@@ -299,6 +337,10 @@ var InputNode = /** @class */ (function (_super) {
         var _a;
         (_a = this.wire) === null || _a === void 0 ? void 0 : _a.destroy();
     };
+    InputNode.prototype.getWireRelation = function () {
+        var _a;
+        return (_a = this.wire) === null || _a === void 0 ? void 0 : _a.describeRelation();
+    };
     return InputNode;
 }(GenericNode));
 exports.InputNode = InputNode;
@@ -307,6 +349,7 @@ var OutputNode = /** @class */ (function (_super) {
     function OutputNode() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.wires = [];
+        _this.type = 'output';
         return _this;
     }
     OutputNode.prototype.connectWire = function (wire) {
@@ -382,6 +425,16 @@ var Wire = /** @class */ (function () {
         var _a, _b;
         (_a = this.input) === null || _a === void 0 ? void 0 : _a.removeWire(this);
         (_b = this.output) === null || _b === void 0 ? void 0 : _b.removeWire(this);
+    };
+    Wire.prototype.describeRelation = function () {
+        // If this wire isn't fully connected return undefined
+        if (!this.output || !this.input)
+            return;
+        return {
+            id: this.id,
+            from: { id: this.output.parent.id, node: this.output.getNodeNumber() },
+            to: { id: this.input.parent.id, node: this.input.getNodeNumber() },
+        };
     };
     Wire.HIGH = true;
     Wire.LOW = false;
@@ -801,6 +854,7 @@ var not_gate_1 = __webpack_require__(10);
 var or_gate_1 = __webpack_require__(11);
 var output_1 = __webpack_require__(9);
 var pulse_button_1 = __webpack_require__(12);
+var helpers_1 = __webpack_require__(2);
 var operators = [];
 var savedCombinedOperator = {};
 window.setup = function () {
@@ -809,6 +863,9 @@ window.setup = function () {
 window.draw = function () {
     background(255);
     operators.forEach(function (cur) { return cur.draw(); });
+};
+window.testStringify = function () {
+    console.log((0, helpers_1.stringifyOperators)(operators));
 };
 // Add event listener for dragend event on all list events with data-tool value
 document.querySelectorAll('[data-tool]').forEach(function (cur) {
