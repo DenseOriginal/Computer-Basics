@@ -1,4 +1,5 @@
-import { ConnectionDescription, getRandID } from '../helpers';
+import { getRandID } from '../helpers';
+import { ConnectionDescription } from '../save-load';
 import { Drawable, HasID } from './interfaces';
 import { OutputNode, InputNode } from './node';
 

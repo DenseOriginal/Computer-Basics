@@ -54,7 +54,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.stringifyOperators = exports.getOperator = exports.registerOperator = exports.getRandID = void 0;
+exports.getOperator = exports.registerOperator = exports.getRandID = void 0;
 var getRandID = function () { return __spreadArray([], Array(6), true).map(function () { return Math.floor(Math.random() * 16).toString(16); }).join(''); };
 exports.getRandID = getRandID;
 var operatorMap = new Map();
@@ -67,35 +67,6 @@ function getOperator(name) {
     return operatorMap.get(name);
 }
 exports.getOperator = getOperator;
-function stringifyOperators(operators) {
-    var relations = {
-        operators: [],
-        connections: [],
-    };
-    // Loop over all the operators that we're givin
-    operators.forEach(function (op) {
-        if (op.constructor.name == 'CombinedOperators')
-            throw new Error('Can\'t do CombinedOperators yet...');
-        // Register the current operators
-        relations.operators.push({
-            id: op.id,
-            className: op.constructor.name,
-        });
-        // We only need to loop over every input
-        // Because we can be sure that every wire is between an output and an input
-        // Therefore we only need to check inputs or outputs, not both of them.
-        // If we do check both then we'll encounter wires we have already looked at.
-        op.inputs.forEach(function (node) {
-            // A connection goes from Output -> Input
-            var connection = node.getWireRelation();
-            if (!connection)
-                return; // If the relation is undefined, just skip it
-            relations.connections.push(connection);
-        });
-    });
-    return JSON.stringify(relations);
-}
-exports.stringifyOperators = stringifyOperators;
 
 
 /***/ }),
