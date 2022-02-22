@@ -1,4 +1,4 @@
-import { getRandID } from '../helpers';
+import { ConnectionDescription, getRandID } from '../helpers';
 import { Drawable, HasID } from './interfaces';
 import { OutputNode, InputNode } from './node';
 
@@ -41,6 +41,17 @@ export class Wire implements Drawable, HasID {
   public destroy() {
     this.input?.removeWire(this);
     this.output?.removeWire(this);
+  }
+
+  public describeRelation(): ConnectionDescription | undefined {
+    // If this wire isn't fully connected return undefined
+    if (!this.output || !this.input) return;
+
+    return {
+      id: this.id,
+      from: { id: this.output.parent.id, node: this.output.getNodeNumber() },
+      to: { id: this.input.parent.id, node: this.input.getNodeNumber() },
+    };
   }
 
   static HIGH: true = true;
