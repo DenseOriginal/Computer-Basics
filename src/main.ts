@@ -98,7 +98,8 @@ document.getElementById('new-operator')?.addEventListener('click', () => {
 
   // Setup ondragend handler
   toolButton.addEventListener('dragend', () => {
-    const newOperator = new CombinedOperators(createVector(mouseX, mouseY), savedCombinedOperator[name], name);
+    const newOperator = new CombinedOperators(savedCombinedOperator[name], name);
+    newOperator.pos.set(createVector(mouseX, mouseY));
     operators.push(newOperator);
   });
 });

@@ -1,4 +1,3 @@
-import { Vector } from 'p5';
 import { GenericOperator } from './generic-operators';
 import { Input } from './input';
 import { Output } from './output';
@@ -8,7 +7,7 @@ export class CombinedOperators extends GenericOperator {
   outputOperators: Output[];
   childOperators: GenericOperator[];
 
-  constructor(pos: Vector, operators: GenericOperator[], name: string) {
+  constructor(operators: GenericOperator[], name: string) {
     // Extract the inputs and outputs from all the operators
     // And the sort them in order of their pos.y component
     // This is so that the input/output nodes will match up with the internal input/output operators

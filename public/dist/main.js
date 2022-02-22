@@ -591,7 +591,7 @@ var input_1 = __webpack_require__(6);
 var output_1 = __webpack_require__(9);
 var CombinedOperators = /** @class */ (function (_super) {
     __extends(CombinedOperators, _super);
-    function CombinedOperators(pos, operators, name) {
+    function CombinedOperators(operators, name) {
         var _this = this;
         // Extract the inputs and outputs from all the operators
         // And the sort them in order of their pos.y component
@@ -854,7 +854,6 @@ var not_gate_1 = __webpack_require__(10);
 var or_gate_1 = __webpack_require__(11);
 var output_1 = __webpack_require__(9);
 var pulse_button_1 = __webpack_require__(12);
-var helpers_1 = __webpack_require__(2);
 var operators = [];
 var savedCombinedOperator = {};
 window.setup = function () {
@@ -863,9 +862,6 @@ window.setup = function () {
 window.draw = function () {
     background(255);
     operators.forEach(function (cur) { return cur.draw(); });
-};
-window.testStringify = function () {
-    console.log((0, helpers_1.stringifyOperators)(operators));
 };
 // Add event listener for dragend event on all list events with data-tool value
 document.querySelectorAll('[data-tool]').forEach(function (cur) {
@@ -930,7 +926,8 @@ function createOperator(tool) {
     (_a = document.getElementById('insert-before-here')) === null || _a === void 0 ? void 0 : _a.insertAdjacentElement('beforebegin', toolButton);
     // Setup ondragend handler
     toolButton.addEventListener('dragend', function () {
-        var newOperator = new combined_operators_1.CombinedOperators(createVector(mouseX, mouseY), savedCombinedOperator[name], name);
+        var newOperator = new combined_operators_1.CombinedOperators(savedCombinedOperator[name], name);
+        newOperator.pos.set(createVector(mouseX, mouseY));
         operators.push(newOperator);
     });
 });
