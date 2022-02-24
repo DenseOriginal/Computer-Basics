@@ -92,3 +92,42 @@ export function parseOperators(input: string): GenericOperator[] {
 
   return Array.from(operators.values());
 }
+
+export function saveCircuitInLocalStorage(operators: GenericOperator[], name: string): void {
+  const stringifiedOperators = stringifyOperators(operators);
+  const stringToSave = `${name}|${stringifiedOperators}`;
+
+  // Prefix the key with 'circuit' to avoid collision between other keys
+  localStorage.setItem(`circuit-${name}`, stringToSave);
+}
+
+export function loadCircuitFromLocalStorage(name: string): GenericOperator[] | undefined {
+  const rawItem = localStorage.getItem(`circuit-${name}`);
+  if (!rawItem) return undefined;
+
+  // Split the raw item by the delimeter '|'
+  // And  get the second item in the array
+  const stringifiedOperators = rawItem.split('|')[1];
+
+  // Parse and return the operators
+  return parseOperators(stringifiedOperators);
+}
+
+export function loadAllCircuits(): string[] {
+  const circuits: string[] = [];
+
+  for (let idx = 0; idx < localStorage.length; idx++) {
+    const key = localStorage.key(idx);
+    if (key && key.startsWith('circuit-')) {
+      // Get pretty name from the item
+      const name = localStorage.getItem(key)?.split('|')[0];
+
+      // If the name exists, then push it to the circuits array
+      if (name) circuits.push(name);
+    }
+  }
+
+  return circuits;
+}
+
+(window as any).loadAllCircuits = loadAllCircuits;
