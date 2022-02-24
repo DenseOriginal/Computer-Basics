@@ -957,6 +957,7 @@ var save_load_1 = __webpack_require__(13);
 var operators = [];
 window.setup = function () {
     createCanvas(windowWidth, windowHeight);
+    (0, save_load_1.loadAllCircuits)().forEach(function (name) { return addCombinedOperatorToUI(name); });
 };
 window.draw = function () {
     background(255);

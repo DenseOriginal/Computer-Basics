@@ -9,12 +9,14 @@ import { NotGate } from './classes/not-gate';
 import { OrGate } from './classes/or-gate';
 import { Output } from './classes/output';
 import { PulseButton } from './classes/pulse-button';
-import { loadCircuitFromLocalStorage, saveCircuitInLocalStorage } from './save-load';
+import { loadAllCircuits, loadCircuitFromLocalStorage, saveCircuitInLocalStorage } from './save-load';
 
 const operators: GenericOperator[] = [];
 
 (window as any).setup = () => {
   createCanvas(windowWidth, windowHeight);
+
+  loadAllCircuits().forEach((name) => addCombinedOperatorToUI(name));
 };
 
 (window as any).draw = () => {
