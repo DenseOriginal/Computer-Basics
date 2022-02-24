@@ -97,7 +97,7 @@ var GenericOperator = /** @class */ (function () {
         this.outputs = [];
         this.dragging = false;
         this.pos = createVector();
-        this.id = (0, helpers_1.getRandID)();
+        this._id = (0, helpers_1.getRandID)();
         // Calculate the width and label
         // Depending on what type labelOrWidth is
         this.width = typeof labelOrWidth === 'string' ? textWidth(labelOrWidth) + 40 : labelOrWidth;
@@ -116,6 +116,13 @@ var GenericOperator = /** @class */ (function () {
             this.outputs.push(new node_1.OutputNode(createVector(this.width / 1.7, ((-this.height / 2) + (i * this.height / outputsN)) + (this.height / outputsN / 2)), this));
         }
     }
+    Object.defineProperty(GenericOperator.prototype, "id", {
+        get: function () { return this._id; } // eslint-disable-line no-underscore-dangle
+        ,
+        enumerable: false,
+        configurable: true
+    });
+    GenericOperator.prototype.setId = function (id) { this._id = id; }; // eslint-disable-line no-underscore-dangle
     GenericOperator.prototype.draw = function () {
         push();
         rectMode(CENTER);
@@ -373,9 +380,11 @@ var helpers_1 = __webpack_require__(2);
 // Wire class that describes a connection between an input- and output-node
 // A wire can only be connected to 1 input and 1 output
 var Wire = /** @class */ (function () {
-    function Wire() {
+    // eslint-disable-next-line no-useless-constructor
+    function Wire(id) {
+        if (id === void 0) { id = (0, helpers_1.getRandID)(); }
+        this.id = id;
         this.status = false;
-        this.id = (0, helpers_1.getRandID)();
     }
     Wire.prototype.draw = function () {
         push();
@@ -781,6 +790,120 @@ exports.PulseButton = PulseButton;
 (0, helpers_1.registerOperator)(PulseButton);
 
 
+/***/ }),
+/* 13 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.loadAllCircuits = exports.loadCircuitFromLocalStorage = exports.saveCircuitInLocalStorage = exports.parseOperators = exports.stringifyOperators = void 0;
+var wire_1 = __webpack_require__(5);
+var helpers_1 = __webpack_require__(2);
+function stringifyOperators(operators) {
+    var relations = {
+        operators: [],
+        connections: [],
+    };
+    // Loop over all the operators that we're givin
+    operators.forEach(function (op) {
+        if (op.constructor.name == 'CombinedOperators')
+            throw new Error('Can\'t do CombinedOperators yet...');
+        // Register the current operators
+        relations.operators.push({
+            id: op.id,
+            className: op.constructor.name,
+        });
+        // We only need to loop over every input
+        // Because we can be sure that every wire is between an output and an input
+        // Therefore we only need to check inputs or outputs, not both of them.
+        // If we do check both then we'll encounter wires we have already looked at.
+        op.inputs.forEach(function (node) {
+            // A connection goes from Output -> Input
+            var connection = node.getWireRelation();
+            if (!connection)
+                return; // If the relation is undefined, just skip it
+            relations.connections.push(connection);
+        });
+    });
+    return JSON.stringify(relations);
+}
+exports.stringifyOperators = stringifyOperators;
+function parseOperators(input) {
+    var relations = JSON.parse(input);
+    var operators = new Map();
+    // Loop over every operator
+    // And instatiate them
+    relations.operators.forEach(function (opDescription) {
+        // Destructure the operator description
+        var id = opDescription.id, className = opDescription.className;
+        // Try to retrieve the operator class, from the operatorMap
+        var operatorClass = (0, helpers_1.getOperator)(className);
+        // If the operatorClass wasn't found then throw an error
+        if (!operatorClass)
+            throw new Error("Unknown class '".concat(className, "'"));
+        // eslint-disable-next-line new-cap
+        var newOperator = new operatorClass();
+        // Give the new operator the correct ID
+        newOperator.setId(id);
+        // Add the new operator to the Map with the id as the key
+        operators.set(id, newOperator);
+    });
+    relations.connections.forEach(function (connection) {
+        // Destructure the connection
+        var id = connection.id, from = connection.from, to = connection.to;
+        // Instantiate the new wire, with the correct ID
+        var newWire = new wire_1.Wire(id);
+        // Retriwve the correct opeators from the Map
+        var fromOperator = operators.get(from.id);
+        var toOperator = operators.get(to.id);
+        // Check if both operators exist
+        if (!fromOperator)
+            throw new Error("Incorrect id for fromOperator: ".concat(from.id));
+        if (!toOperator)
+            throw new Error("Incorrect id for toOperator: ".concat(to.id));
+        // Connect the wire to the correct nodes
+        newWire.connect(toOperator.inputs[to.node], fromOperator.outputs[from.node]);
+    });
+    return Array.from(operators.values());
+}
+exports.parseOperators = parseOperators;
+function saveCircuitInLocalStorage(operators, name) {
+    var stringifiedOperators = stringifyOperators(operators);
+    var stringToSave = "".concat(name, "|").concat(stringifiedOperators);
+    // Prefix the key with 'circuit' to avoid collision between other keys
+    localStorage.setItem("circuit-".concat(name), stringToSave);
+}
+exports.saveCircuitInLocalStorage = saveCircuitInLocalStorage;
+function loadCircuitFromLocalStorage(name) {
+    var rawItem = localStorage.getItem("circuit-".concat(name));
+    if (!rawItem)
+        return undefined;
+    // Split the raw item by the delimeter '|'
+    // And  get the second item in the array
+    var stringifiedOperators = rawItem.split('|')[1];
+    // Parse and return the operators
+    return parseOperators(stringifiedOperators);
+}
+exports.loadCircuitFromLocalStorage = loadCircuitFromLocalStorage;
+function loadAllCircuits() {
+    var _a;
+    var circuits = [];
+    for (var idx = 0; idx < localStorage.length; idx++) {
+        var key_1 = localStorage.key(idx);
+        if (key_1 && key_1.startsWith('circuit-')) {
+            // Get pretty name from the item
+            var name_1 = (_a = localStorage.getItem(key_1)) === null || _a === void 0 ? void 0 : _a.split('|')[0];
+            // If the name exists, then push it to the circuits array
+            if (name_1)
+                circuits.push(name_1);
+        }
+    }
+    return circuits;
+}
+exports.loadAllCircuits = loadAllCircuits;
+window.loadAllCircuits = loadAllCircuits;
+
+
 /***/ })
 /******/ 	]);
 /************************************************************************/
@@ -825,6 +948,7 @@ var not_gate_1 = __webpack_require__(10);
 var or_gate_1 = __webpack_require__(11);
 var output_1 = __webpack_require__(9);
 var pulse_button_1 = __webpack_require__(12);
+var save_load_1 = __webpack_require__(13);
 var operators = [];
 var savedCombinedOperator = {};
 window.setup = function () {
@@ -889,6 +1013,8 @@ function createOperator(tool) {
     operators.forEach(function (op) { return savedCombinedOperator[name].push(op); });
     // Then erase the current operators
     operators.length = 0;
+    // Save the operators to localStorage
+    (0, save_load_1.saveCircuitInLocalStorage)(savedCombinedOperator[name], name);
     // Create the tool button in the UI
     var toolButton = document.createElement('li');
     toolButton.draggable = true;

@@ -10,6 +10,7 @@ import { NotGate } from './classes/not-gate';
 import { OrGate } from './classes/or-gate';
 import { Output } from './classes/output';
 import { PulseButton } from './classes/pulse-button';
+import { saveCircuitInLocalStorage } from './save-load';
 
 const operators: GenericOperator[] = [];
 const savedCombinedOperator: SavedCombinedOperator = {};
@@ -87,6 +88,9 @@ document.getElementById('new-operator')?.addEventListener('click', () => {
 
   // Then erase the current operators
   operators.length = 0;
+
+  // Save the operators to localStorage
+  saveCircuitInLocalStorage(savedCombinedOperator[name], name);
 
   // Create the tool button in the UI
   const toolButton = document.createElement('li');
