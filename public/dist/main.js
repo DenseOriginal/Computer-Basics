@@ -887,7 +887,7 @@ function loadCircuitFromLocalStorage(name) {
     // And  get the second item in the array
     var stringifiedOperators = rawItem.split('|')[1];
     // Parse and return the operators
-    return parseOperators(stringifiedOperators);
+    return stringifiedOperators;
 }
 exports.loadCircuitFromLocalStorage = loadCircuitFromLocalStorage;
 function loadAllCircuits() {
@@ -955,7 +955,6 @@ var output_1 = __webpack_require__(9);
 var pulse_button_1 = __webpack_require__(12);
 var save_load_1 = __webpack_require__(13);
 var operators = [];
-var savedCombinedOperator = {};
 window.setup = function () {
     createCanvas(windowWidth, windowHeight);
 };
@@ -1006,32 +1005,16 @@ function createOperator(tool) {
 // Listen for when the 'Create Operator' is pressed
 // Then combine all the current operators into one
 (_a = document.getElementById('new-operator')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', function () {
-    var _a;
     // Ask the user what it should be called
     var name = prompt('What will you call this new operator');
     if (!name)
         return alert('You can\'t create an operator without a name');
-    // Copy all the current operators to the savedCombinedOperator object Under the user given name
-    // Very important that we don't just write `savedCombinedOperator[name] = operator`, because then we only copy the reference
-    // And then when we erase all the current operators, it will also erase all the saved onces
-    savedCombinedOperator[name] = [];
-    operators.forEach(function (op) { return savedCombinedOperator[name].push(op); });
+    // Save the operators to localStorage
+    (0, save_load_1.saveCircuitInLocalStorage)(operators, name);
     // Then erase the current operators
     operators.length = 0;
-    // Save the operators to localStorage
-    (0, save_load_1.saveCircuitInLocalStorage)(savedCombinedOperator[name], name);
-    // Create the tool button in the UI
-    var toolButton = document.createElement('li');
-    toolButton.draggable = true;
-    toolButton.innerText = name;
-    // Insert the button before the spacer
-    (_a = document.getElementById('insert-before-here')) === null || _a === void 0 ? void 0 : _a.insertAdjacentElement('beforebegin', toolButton);
-    // Setup ondragend handler
-    toolButton.addEventListener('dragend', function () {
-        var newOperator = new combined_operators_1.CombinedOperators(savedCombinedOperator[name], name);
-        newOperator.pos.set(createVector(mouseX, mouseY));
-        operators.push(newOperator);
-    });
+    // Add the button to UI
+    addCombinedOperatorToUI(name);
 });
 // Get the deletion zone element, and show it when the user is dragging an operator around
 var deletionZone = document.getElementById('deletion-zone');
@@ -1070,6 +1053,27 @@ window.mouseReleased = function () {
     }
     draggingItem = undefined;
 };
+// Takes in the name of a combinedOperator
+// Adds it to the UI
+// And setup eventlistner
+function addCombinedOperatorToUI(name) {
+    var _a;
+    var stringifiedCircuit = (0, save_load_1.loadCircuitFromLocalStorage)(name);
+    if (!stringifiedCircuit)
+        throw new Error("Unknown circuit: '".concat(name, "'"));
+    // Create the tool button in the UI
+    var toolButton = document.createElement('li');
+    toolButton.draggable = true;
+    toolButton.innerText = name;
+    // Insert the button before the spacer
+    (_a = document.getElementById('insert-before-here')) === null || _a === void 0 ? void 0 : _a.insertAdjacentElement('beforebegin', toolButton);
+    // Setup ondragend handler
+    toolButton.addEventListener('dragend', function () {
+        var newOperator = combined_operators_1.CombinedOperators.fromString(stringifiedCircuit, name);
+        newOperator.pos.set(createVector(mouseX, mouseY));
+        operators.push(newOperator);
+    });
+}
 
 })();
 
