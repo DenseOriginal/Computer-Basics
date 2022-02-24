@@ -566,6 +566,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CombinedOperators = void 0;
+var save_load_1 = __webpack_require__(13);
 var generic_operators_1 = __webpack_require__(3);
 var input_1 = __webpack_require__(6);
 var output_1 = __webpack_require__(9);
@@ -596,6 +597,10 @@ var CombinedOperators = /** @class */ (function (_super) {
         });
         // Loop over every output node, and set it's state the match the internal output opetators state
         this.outputs.forEach(function (out, idx) { return out.setStatus(_this.outputOperators[idx].state); });
+    };
+    CombinedOperators.fromString = function (stringifiedOperators, name) {
+        var operators = (0, save_load_1.parseOperators)(stringifiedOperators);
+        return new CombinedOperators(operators, name);
     };
     return CombinedOperators;
 }(generic_operators_1.GenericOperator));

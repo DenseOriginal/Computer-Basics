@@ -1,3 +1,4 @@
+import { parseOperators } from '../save-load';
 import { GenericOperator } from './generic-operators';
 import { Input } from './input';
 import { Output } from './output';
@@ -34,5 +35,10 @@ export class CombinedOperators extends GenericOperator {
 
     // Loop over every output node, and set it's state the match the internal output opetators state
     this.outputs.forEach((out, idx) => out.setStatus(this.outputOperators[idx].state));
+  }
+
+  static fromString(stringifiedOperators: string, name: string): CombinedOperators {
+    const operators = parseOperators(stringifiedOperators);
+    return new CombinedOperators(operators, name);
   }
 }
