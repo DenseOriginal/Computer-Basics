@@ -101,7 +101,7 @@ export function saveCircuitInLocalStorage(operators: GenericOperator[], name: st
   localStorage.setItem(`circuit-${name}`, stringToSave);
 }
 
-export function loadCircuitFromLocalStorage(name: string): GenericOperator[] | undefined {
+export function loadCircuitFromLocalStorage(name: string): string | undefined {
   const rawItem = localStorage.getItem(`circuit-${name}`);
   if (!rawItem) return undefined;
 
@@ -110,7 +110,7 @@ export function loadCircuitFromLocalStorage(name: string): GenericOperator[] | u
   const stringifiedOperators = rawItem.split('|')[1];
 
   // Parse and return the operators
-  return parseOperators(stringifiedOperators);
+  return stringifiedOperators;
 }
 
 export function loadAllCircuits(): string[] {
