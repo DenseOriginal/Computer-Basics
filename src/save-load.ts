@@ -1,4 +1,6 @@
 import { GenericOperator } from './classes/generic-operators';
+import { Wire } from './classes/wire';
+import { getOperator } from './helpers';
 
 export type OperatorDescription = { id: string, className: string };
 export type ConnectionDescription = {
@@ -41,4 +43,52 @@ export function stringifyOperators(operators: GenericOperator[]): string {
   });
 
   return JSON.stringify(relations);
+}
+
+export function parseOperators(input: string): GenericOperator[] {
+  const relations = <RelationMap>JSON.parse(input);
+  const operators = new Map<string, GenericOperator>();
+
+  // Loop over every operator
+  // And instatiate them
+  relations.operators.forEach((opDescription) => {
+    // Destructure the operator description
+    const { id, className } = opDescription;
+
+    // Try to retrieve the operator class, from the operatorMap
+    const operatorClass = getOperator(className);
+
+    // If the operatorClass wasn't found then throw an error
+    if (!operatorClass) throw new Error(`Unknown class '${className}'`);
+
+    // eslint-disable-next-line new-cap
+    const newOperator = new operatorClass();
+
+    // Give the new operator the correct ID
+    newOperator.setId(id);
+
+    // Add the new operator to the Map with the id as the key
+    operators.set(id, newOperator);
+  });
+
+  relations.connections.forEach((connection) => {
+    // Destructure the connection
+    const { id, from, to } = connection;
+
+    // Instantiate the new wire, with the correct ID
+    const newWire = new Wire(id);
+
+    // Retriwve the correct opeators from the Map
+    const fromOperator = operators.get(from.id);
+    const toOperator = operators.get(to.id);
+
+    // Check if both operators exist
+    if (!fromOperator) throw new Error(`Incorrect id for fromOperator: ${from.id}`);
+    if (!toOperator) throw new Error(`Incorrect id for toOperator: ${to.id}`);
+
+    // Connect the wire to the correct nodes
+    newWire.connect(toOperator.inputs[to.node], fromOperator.outputs[from.node]);
+  });
+
+  return Array.from(operators.values());
 }
