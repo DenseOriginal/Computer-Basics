@@ -9,10 +9,12 @@ export type Status = boolean;
 // A wire can only be connected to 1 input and 1 output
 export class Wire implements Drawable, HasID {
   public status: Status = false;
-  readonly id = getRandID();
 
   public output: OutputNode | undefined;
   public input: InputNode | undefined;
+
+  // eslint-disable-next-line no-useless-constructor
+  constructor(public readonly id = getRandID()) { /* */ }
 
   draw() {
     push();

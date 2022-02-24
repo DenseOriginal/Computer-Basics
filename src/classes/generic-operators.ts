@@ -26,7 +26,9 @@ export abstract class GenericOperator implements Drawable, HasID {
 
   public pos: Vector = createVector();
 
-  readonly id = getRandID();
+  private _id = getRandID();
+  public get id() { return this._id; } // eslint-disable-line no-underscore-dangle
+  public setId(id: string) { this._id = id; } // eslint-disable-line no-underscore-dangle
 
   constructor(
     inputsN: number,
