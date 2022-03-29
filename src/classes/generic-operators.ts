@@ -49,7 +49,7 @@ export abstract class GenericOperator implements Drawable, HasID {
     // Generate input nodes and space evenly on the left side
     for (let i = 0; i < inputsN; i++) {
       this.inputs.push(new InputNode(createVector(
-        -this.width / 1.7,
+        -(this.width / 2) - 5,
         ((-this.height / 2) + (i * this.height / inputsN)) + (this.height / inputsN / 2),
       ), this));
     }
@@ -57,7 +57,7 @@ export abstract class GenericOperator implements Drawable, HasID {
     // Generate output nodes and space evenly on the right side
     for (let i = 0; i < outputsN; i++) {
       this.outputs.push(new OutputNode(createVector(
-        this.width / 1.7,
+        (this.width / 2) + 5,
         ((-this.height / 2) + (i * this.height / outputsN)) + (this.height / outputsN / 2),
       ), this));
     }
