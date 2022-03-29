@@ -11,6 +11,18 @@
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
+*::-webkit-scrollbar {
+    display: none;
+}
+
+*::-webkit-scrollbar-track {
+    background-color: #f5f5f5;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #bdbdbd;
+}
+
 body {
     width: 100vw;
     height: 100vh;
@@ -27,6 +39,26 @@ body {
     padding: 8px 16px;
     background-color: rgba(0, 0, 0, 0.04);
     border-radius: 3px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 8px;
+    height: 50.5px;
+}
+
+.wrapper {
+    max-width: 650px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: relative;
+}
+
+.wrapper::-webkit-scrollbar {
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 2px;
 }
 
 ul {
@@ -35,32 +67,37 @@ ul {
     justify-content: space-between;
     height: 34.5px;
     align-items: center;
+    gap: 8px;
 }
 
-li {
+li,
+span {
     background-color: white;
     padding: 8px 12px;
     border-radius: 4px;
-    margin: 0px 8px;
     transition: all 100ms;
     cursor: move;
+    width: max-content;
+    flex-shrink: 0;
 }
 
-li:hover {
+li:hover,
+span:hover {
     background-color: rgb(245, 197, 197);
 }
 
-li:active {
+li:active,
+span:active {
     background-color: rgb(255, 134, 134);
 }
 
 .spacer {
     content: "";
-    margin: 0 12px;
     padding: 0;
-    height: 75%;
+    height: 28px;
     width: 1px;
     background-color: grey;
+    margin: auto;
 }
 
 #new-operator {

@@ -17,18 +17,21 @@
     </div>
 
     <div class="tool-selection">
-      <ul>
-        <li draggable="true" data-tool="pulse">Pulse</li>
-        <li draggable="true" data-tool="clock">Clock</li>
-        <li draggable="true" data-tool="input">Input</li>
-        <li draggable="true" data-tool="output">Output</li>
-        <li draggable="true" data-tool="andGate">AND</li>
-        <li draggable="true" data-tool="orGate">OR</li>
-        <li draggable="true" data-tool="notGate">NOT</li>
-        <li draggable="true" data-tool="1bitAdder">1-Bit Adder</li>
-        <li class="spacer" id="insert-before-here"></li>
-        <li id="new-operator">Create Operator</li>
-      </ul>
+      <div class="wrapper">
+        <ul>
+          <li draggable="true" data-tool="pulse">Pulse</li>
+          <li draggable="true" data-tool="clock">Clock</li>
+          <li draggable="true" data-tool="input">Input</li>
+          <li draggable="true" data-tool="output">Output</li>
+          <li draggable="true" data-tool="andGate">AND</li>
+          <li draggable="true" data-tool="orGate">OR</li>
+          <li draggable="true" data-tool="notGate">NOT</li>
+          <li draggable="true" data-tool="1bitAdder">1-Bit Adder</li>
+          <li style="display: none;" id="insert-before-here"></li>
+        </ul>
+      </div>
+      <span class="spacer"></span>
+      <span id="new-operator">Create Operator</span>
     </div>
     <script src="./dist/main.js"></script>
   </body>
