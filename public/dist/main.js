@@ -109,11 +109,11 @@ var GenericOperator = /** @class */ (function () {
         this.height = Math.max(most * 25, 50);
         // Generate input nodes and space evenly on the left side
         for (var i = 0; i < inputsN; i++) {
-            this.inputs.push(new node_1.InputNode(createVector(-this.width / 1.7, ((-this.height / 2) + (i * this.height / inputsN)) + (this.height / inputsN / 2)), this));
+            this.inputs.push(new node_1.InputNode(createVector(-(this.width / 2) - 5, ((-this.height / 2) + (i * this.height / inputsN)) + (this.height / inputsN / 2)), this));
         }
         // Generate output nodes and space evenly on the right side
         for (var i = 0; i < outputsN; i++) {
-            this.outputs.push(new node_1.OutputNode(createVector(this.width / 1.7, ((-this.height / 2) + (i * this.height / outputsN)) + (this.height / outputsN / 2)), this));
+            this.outputs.push(new node_1.OutputNode(createVector((this.width / 2) + 5, ((-this.height / 2) + (i * this.height / outputsN)) + (this.height / outputsN / 2)), this));
         }
     }
     Object.defineProperty(GenericOperator.prototype, "id", {
@@ -566,10 +566,10 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CombinedOperators = void 0;
-var save_load_1 = __webpack_require__(13);
+var save_load_1 = __webpack_require__(9);
 var generic_operators_1 = __webpack_require__(3);
 var input_1 = __webpack_require__(6);
-var output_1 = __webpack_require__(9);
+var output_1 = __webpack_require__(10);
 var CombinedOperators = /** @class */ (function (_super) {
     __extends(CombinedOperators, _super);
     function CombinedOperators(operators, name) {
@@ -609,194 +609,6 @@ exports.CombinedOperators = CombinedOperators;
 
 /***/ }),
 /* 9 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Output = void 0;
-var helpers_1 = __webpack_require__(2);
-var generic_operators_1 = __webpack_require__(3);
-var Output = /** @class */ (function (_super) {
-    __extends(Output, _super);
-    function Output() {
-        var _this = _super.call(this, 1, 0) || this;
-        _this.state = false;
-        return _this;
-    }
-    Output.prototype.customDraw = function () {
-        push();
-        rectMode(CENTER);
-        noStroke();
-        // Draw a smaller rectangle to represent the output
-        // A high value is a green rectangle
-        // And a low value is a darkgrey rectangle
-        fill(this.inputs[0].status ? '#a0ffa0' : '#101010');
-        rect(this.pos.x, this.pos.y, this.width * 0.75, this.height * 0.75, 2, 2, 2, 2);
-        pop();
-    };
-    Output.prototype.logic = function () {
-        this.state = this.inputs[0].status;
-    };
-    return Output;
-}(generic_operators_1.GenericOperator));
-exports.Output = Output;
-(0, helpers_1.registerOperator)(Output);
-
-
-/***/ }),
-/* 10 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NotGate = void 0;
-var helpers_1 = __webpack_require__(2);
-var generic_operators_1 = __webpack_require__(3);
-var NotGate = /** @class */ (function (_super) {
-    __extends(NotGate, _super);
-    function NotGate() {
-        return _super.call(this, 1, 1, 'NOT') || this;
-    }
-    NotGate.prototype.logic = function () {
-        this.outputs[0].setStatus(!this.inputs[0].status);
-    };
-    return NotGate;
-}(generic_operators_1.GenericOperator));
-exports.NotGate = NotGate;
-(0, helpers_1.registerOperator)(NotGate);
-
-
-/***/ }),
-/* 11 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OrGate = void 0;
-var helpers_1 = __webpack_require__(2);
-var generic_operators_1 = __webpack_require__(3);
-var OrGate = /** @class */ (function (_super) {
-    __extends(OrGate, _super);
-    function OrGate() {
-        return _super.call(this, 2, 1, 'OR') || this;
-    }
-    OrGate.prototype.logic = function () {
-        this.outputs[0].setStatus(this.inputs[0].status || this.inputs[1].status);
-    };
-    return OrGate;
-}(generic_operators_1.GenericOperator));
-exports.OrGate = OrGate;
-(0, helpers_1.registerOperator)(OrGate);
-
-
-/***/ }),
-/* 12 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PulseButton = void 0;
-var helpers_1 = __webpack_require__(2);
-var generic_operators_1 = __webpack_require__(3);
-var buttonSize = 50;
-var pulse = 30;
-var PulseButton = /** @class */ (function (_super) {
-    __extends(PulseButton, _super);
-    function PulseButton() {
-        var _this = _super.call(this, 0, 1) || this;
-        document.addEventListener('mousedown', function () { return _this.mouseClicked(); });
-        return _this;
-    }
-    PulseButton.prototype.customDraw = function () {
-        push();
-        noStroke();
-        fill('#db0000');
-        circle(this.pos.x, this.pos.y, buttonSize * 0.7);
-        // Draw a little '1' in the lower right corner
-        textAlign(CENTER, CENTER);
-        textSize(buttonSize * 0.3);
-        fill('#fff');
-        text('1', this.pos.x + (buttonSize * 0.7 / 2), this.pos.y + (buttonSize * 0.7 / 2));
-        pop();
-    };
-    PulseButton.prototype.logic = function () { };
-    PulseButton.prototype.mouseClicked = function () {
-        var _this = this;
-        var distSq = (Math.pow((this.pos.x - mouseX), 2)) + (Math.pow((this.pos.y - mouseY), 2));
-        var dist = Math.sqrt(distSq);
-        if (dist < buttonSize * 0.7 / 2) {
-            this.outputs[0].setStatus(true);
-            setTimeout(function () { return _this.outputs[0].setStatus(false); }, pulse);
-        }
-    };
-    return PulseButton;
-}(generic_operators_1.GenericOperator));
-exports.PulseButton = PulseButton;
-(0, helpers_1.registerOperator)(PulseButton);
-
-
-/***/ }),
-/* 13 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
@@ -909,6 +721,239 @@ exports.loadAllCircuits = loadAllCircuits;
 window.loadAllCircuits = loadAllCircuits;
 
 
+/***/ }),
+/* 10 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Output = void 0;
+var helpers_1 = __webpack_require__(2);
+var generic_operators_1 = __webpack_require__(3);
+var Output = /** @class */ (function (_super) {
+    __extends(Output, _super);
+    function Output() {
+        var _this = _super.call(this, 1, 0) || this;
+        _this.state = false;
+        return _this;
+    }
+    Output.prototype.customDraw = function () {
+        push();
+        rectMode(CENTER);
+        noStroke();
+        // Draw a smaller rectangle to represent the output
+        // A high value is a green rectangle
+        // And a low value is a darkgrey rectangle
+        fill(this.inputs[0].status ? '#a0ffa0' : '#101010');
+        rect(this.pos.x, this.pos.y, this.width * 0.75, this.height * 0.75, 2, 2, 2, 2);
+        pop();
+    };
+    Output.prototype.logic = function () {
+        this.state = this.inputs[0].status;
+    };
+    return Output;
+}(generic_operators_1.GenericOperator));
+exports.Output = Output;
+(0, helpers_1.registerOperator)(Output);
+
+
+/***/ }),
+/* 11 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NotGate = void 0;
+var helpers_1 = __webpack_require__(2);
+var generic_operators_1 = __webpack_require__(3);
+var NotGate = /** @class */ (function (_super) {
+    __extends(NotGate, _super);
+    function NotGate() {
+        return _super.call(this, 1, 1, 'NOT') || this;
+    }
+    NotGate.prototype.logic = function () {
+        this.outputs[0].setStatus(!this.inputs[0].status);
+    };
+    return NotGate;
+}(generic_operators_1.GenericOperator));
+exports.NotGate = NotGate;
+(0, helpers_1.registerOperator)(NotGate);
+
+
+/***/ }),
+/* 12 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OrGate = void 0;
+var helpers_1 = __webpack_require__(2);
+var generic_operators_1 = __webpack_require__(3);
+var OrGate = /** @class */ (function (_super) {
+    __extends(OrGate, _super);
+    function OrGate() {
+        return _super.call(this, 2, 1, 'OR') || this;
+    }
+    OrGate.prototype.logic = function () {
+        this.outputs[0].setStatus(this.inputs[0].status || this.inputs[1].status);
+    };
+    return OrGate;
+}(generic_operators_1.GenericOperator));
+exports.OrGate = OrGate;
+(0, helpers_1.registerOperator)(OrGate);
+
+
+/***/ }),
+/* 13 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PulseButton = void 0;
+var helpers_1 = __webpack_require__(2);
+var generic_operators_1 = __webpack_require__(3);
+var buttonSize = 50;
+var pulse = 30;
+var PulseButton = /** @class */ (function (_super) {
+    __extends(PulseButton, _super);
+    function PulseButton() {
+        var _this = _super.call(this, 0, 1) || this;
+        document.addEventListener('mousedown', function () { return _this.mouseClicked(); });
+        return _this;
+    }
+    PulseButton.prototype.customDraw = function () {
+        push();
+        noStroke();
+        fill('#db0000');
+        circle(this.pos.x, this.pos.y, buttonSize * 0.7);
+        // Draw a little '1' in the lower right corner
+        textAlign(CENTER, CENTER);
+        textSize(buttonSize * 0.3);
+        fill('#fff');
+        text('1', this.pos.x + (buttonSize * 0.7 / 2), this.pos.y + (buttonSize * 0.7 / 2));
+        pop();
+    };
+    PulseButton.prototype.logic = function () { };
+    PulseButton.prototype.mouseClicked = function () {
+        var _this = this;
+        var distSq = (Math.pow((this.pos.x - mouseX), 2)) + (Math.pow((this.pos.y - mouseY), 2));
+        var dist = Math.sqrt(distSq);
+        if (dist < buttonSize * 0.7 / 2) {
+            this.outputs[0].setStatus(true);
+            setTimeout(function () { return _this.outputs[0].setStatus(false); }, pulse);
+        }
+    };
+    return PulseButton;
+}(generic_operators_1.GenericOperator));
+exports.PulseButton = PulseButton;
+(0, helpers_1.registerOperator)(PulseButton);
+
+
+/***/ }),
+/* 14 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BitAdder = void 0;
+var helpers_1 = __webpack_require__(2);
+var generic_operators_1 = __webpack_require__(3);
+var BitAdder = /** @class */ (function (_super) {
+    __extends(BitAdder, _super);
+    function BitAdder() {
+        return _super.call(this, 3, 2, '1B Adder') || this;
+    }
+    BitAdder.prototype.logic = function () {
+        var a = this.inputs[0].status;
+        var b = this.inputs[1].status;
+        var c = this.inputs[2].status;
+        var firstSum = xor(a, b);
+        var carrySum = xor(firstSum, c);
+        this.outputs[0].setStatus(carrySum);
+        this.outputs[1].setStatus((a && b) || (firstSum && c));
+    };
+    return BitAdder;
+}(generic_operators_1.GenericOperator));
+exports.BitAdder = BitAdder;
+(0, helpers_1.registerOperator)(BitAdder);
+var xor = function (a, b) { return !(a && b) && (a || b); };
+
+
 /***/ })
 /******/ 	]);
 /************************************************************************/
@@ -949,11 +994,12 @@ var and_gate_1 = __webpack_require__(1);
 var input_1 = __webpack_require__(6);
 var clock_1 = __webpack_require__(7);
 var combined_operators_1 = __webpack_require__(8);
-var not_gate_1 = __webpack_require__(10);
-var or_gate_1 = __webpack_require__(11);
-var output_1 = __webpack_require__(9);
-var pulse_button_1 = __webpack_require__(12);
-var save_load_1 = __webpack_require__(13);
+var not_gate_1 = __webpack_require__(11);
+var or_gate_1 = __webpack_require__(12);
+var output_1 = __webpack_require__(10);
+var pulse_button_1 = __webpack_require__(13);
+var save_load_1 = __webpack_require__(9);
+var _1bit_adder_1 = __webpack_require__(14);
 var operators = [];
 window.setup = function () {
     createCanvas(windowWidth, windowHeight);
@@ -995,6 +1041,9 @@ function createOperator(tool) {
             break;
         case 'orGate':
             newOperator = new or_gate_1.OrGate();
+            break;
+        case '1bitAdder':
+            newOperator = new _1bit_adder_1.BitAdder();
             break;
         default:
             var exhaustiveCheck = tool;

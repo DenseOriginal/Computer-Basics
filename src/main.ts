@@ -10,6 +10,7 @@ import { OrGate } from './classes/or-gate';
 import { Output } from './classes/output';
 import { PulseButton } from './classes/pulse-button';
 import { loadAllCircuits, loadCircuitFromLocalStorage, saveCircuitInLocalStorage } from './save-load';
+import { BitAdder } from './classes/1bit-adder';
 
 const operators: GenericOperator[] = [];
 
@@ -37,7 +38,7 @@ document.querySelectorAll('[data-tool]').forEach((cur) => {
 // Helper for creating a new operator on the screen
 // It instantiates a new class corosponding to the tool that was passed in
 // And then it appends the newly created operator to the operators array
-type Tools = 'pulse' | 'clock' | 'input' | 'output' | 'andGate' | 'orGate' | 'notGate';
+type Tools = 'pulse' | 'clock' | 'input' | 'output' | 'andGate' | 'orGate' | 'notGate' | '1bitAdder';
 function createOperator(tool: Tools): void {
   let newOperator: GenericOperator | undefined;
 
@@ -62,6 +63,9 @@ function createOperator(tool: Tools): void {
     break;
   case 'orGate':
     newOperator = new OrGate();
+    break;
+  case '1bitAdder':
+    newOperator = new BitAdder();
     break;
   default:
     const exhaustiveCheck: never = tool;
